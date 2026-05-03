@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GTM Engineer Archetypes</title>
+<style>
+  :root {
+    --bg: #fafaf7;
+    --ink: #1a1a1a;
+    --muted: #6b6b6b;
+    --line: #e5e3dc;
+    --card: #ffffff;
+    --accent: #d4541a;
+    --marketing: #2b6cb0;
+    --sales: #2f855a;
+    --data: #6b46c1;
+    --ai: #d4541a;
+    --generalist: #4a5568;
+    --shadow: 0 1px 2px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.04);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", "Helvetica Neue", sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 48px 32px 96px;
+  }
+  header { margin-bottom: 32px; }
+  h1 {
+    font-size: 32px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin: 0 0 8px;
+  }
+  .subtitle {
+    font-size: 15px;
+    color: var(--muted);
+    max-width: 760px;
+    margin: 0 0 24px;
+  }
+  .hero {
+    margin-bottom: 40px;
+    padding: 36px 32px;
+    background: linear-gradient(135deg, var(--card) 0%, #faf8f3 100%);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+  }
+  .hero-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+  .hero-thesis {
+    font-size: 26px;
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+    margin: 0 0 12px;
+    max-width: 880px;
+    color: var(--ink);
+  }
+  .hero-explainer {
+    font-size: 15px;
+    color: var(--muted);
+    margin: 0 0 28px;
+    max-width: 720px;
+  }
+  .trait-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+  .trait-card {
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 18px 20px;
+    position: relative;
+  }
+  .trait-num {
+    position: absolute;
+    top: 14px;
+    right: 16px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--line);
+    letter-spacing: 0.08em;
+  }
+  .trait-card h3 {
+    font-size: 15px;
+    font-weight: 600;
+    margin: 0 0 8px;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+  .trait-card p {
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--muted);
+    margin: 0;
+  }
+  .hero-quote {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--ink);
+    padding: 16px 20px;
+    background: rgba(212,84,26,0.05);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 16px;
+  }
+  .hero-oneliner {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--muted);
+    font-style: italic;
+    padding-top: 4px;
+  }
+  .hero-oneliner strong {
+    color: var(--ink);
+    font-style: normal;
+  }
+  @media (max-width: 700px) {
+    .hero { padding: 24px 20px; }
+    .hero-thesis { font-size: 20px; }
+    .trait-grid { grid-template-columns: 1fr; }
+  }
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: center;
+    margin-bottom: 32px;
+    padding: 16px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+  }
+  .control-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .control-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+    margin-right: 4px;
+  }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 12px;
+    border: 1px solid var(--line);
+    background: var(--bg);
+    border-radius: 999px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    user-select: none;
+  }
+  .chip:hover { border-color: var(--ink); }
+  .chip.active {
+    background: var(--ink);
+    color: white;
+    border-color: var(--ink);
+  }
+  .view-toggle {
+    margin-left: auto;
+    display: flex;
+    gap: 4px;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 3px;
+  }
+  .view-btn {
+    padding: 6px 14px;
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    cursor: pointer;
+    color: var(--muted);
+    font-family: inherit;
+  }
+  .view-btn.active {
+    background: var(--card);
+    color: var(--ink);
+    box-shadow: var(--shadow);
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 16px;
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .card:hover {
+    border-color: var(--ink);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+  }
+  .card.hidden { display: none; }
+  .card-tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 3px 8px;
+    border-radius: 4px;
+    margin-bottom: 12px;
+  }
+  .card-tag.marketing { background: rgba(43,108,176,0.1); color: var(--marketing); }
+  .card-tag.sales { background: rgba(47,133,90,0.1); color: var(--sales); }
+  .card-tag.data { background: rgba(107,70,193,0.1); color: var(--data); }
+  .card-tag.ai { background: rgba(212,84,26,0.1); color: var(--ai); }
+  .card-tag.generalist { background: rgba(74,85,104,0.1); color: var(--generalist); }
+  .card-num {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--line);
+    line-height: 1;
+  }
+  .card h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0 0 6px;
+    letter-spacing: -0.01em;
+  }
+  .card .ops-umbrella {
+    font-size: 11px;
+    color: var(--muted);
+    font-style: italic;
+    margin: 0 0 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed var(--line);
+  }
+  .card .comp-line {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent);
+    margin: 10px 0 4px;
+    letter-spacing: -0.01em;
+  }
+  .card .ships {
+    font-size: 14px;
+    color: var(--ink);
+    margin: 0 0 12px;
+  }
+  .card .ships strong {
+    color: var(--muted);
+    font-weight: 500;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    display: block;
+    margin-bottom: 2px;
+  }
+  .card .clay-use {
+    font-size: 13px;
+    color: var(--muted);
+    margin: 0 0 12px;
+    padding: 8px 10px;
+    background: var(--bg);
+    border-radius: 6px;
+    border-left: 3px solid var(--accent);
+  }
+  .card .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 12px;
+  }
+  .meta-pill {
+    font-size: 11px;
+    padding: 3px 8px;
+    background: var(--bg);
+    border-radius: 4px;
+    color: var(--muted);
+  }
+  .card-expand-hint {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 14px;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .card:hover .card-expand-hint { opacity: 1; }
+
+  /* Modal */
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 100;
+    display: none;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 48px 24px;
+    overflow-y: auto;
+  }
+  .modal-backdrop.open { display: flex; }
+  .modal {
+    background: var(--card);
+    border-radius: 16px;
+    max-width: 720px;
+    width: 100%;
+    padding: 36px;
+    position: relative;
+  }
+  .modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: var(--bg);
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 20px;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-close:hover { background: var(--line); }
+  .modal h2 {
+    font-size: 24px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin: 0 0 6px;
+  }
+  .modal-tagline {
+    color: var(--muted);
+    font-size: 15px;
+    margin: 0 0 24px;
+  }
+  .modal-section {
+    margin-bottom: 20px;
+  }
+  .modal-section h4 {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+    margin: 0 0 6px;
+    font-weight: 600;
+  }
+  .modal-section p,
+  .modal-section .body {
+    font-size: 14px;
+    line-height: 1.55;
+    margin: 0;
+  }
+  .tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .tag {
+    font-size: 12px;
+    padding: 4px 10px;
+    background: var(--bg);
+    border-radius: 4px;
+    color: var(--ink);
+  }
+
+  /* Matrix view */
+  .matrix {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    overflow: hidden;
+    overflow-x: auto;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    min-width: 1000px;
+  }
+  th, td {
+    text-align: left;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+  th {
+    background: var(--bg);
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+    position: sticky;
+    top: 0;
+  }
+  tr:last-child td { border-bottom: none; }
+  td.archetype-cell {
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .axes {
+    margin-top: 32px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 24px;
+  }
+  .axes h3 {
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+    margin: 0 0 16px;
+    font-weight: 600;
+  }
+  .axes-content {
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .legend {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+  .footer-note {
+    margin-top: 48px;
+    padding: 20px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+  .footer-note strong { color: var(--ink); }
+  .lenses-intro {
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 24px;
+    padding: 16px 20px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+  }
+  .lens-block { margin-bottom: 32px; }
+  .lens-title {
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--ink);
+    margin: 0 0 12px;
+    font-weight: 600;
+  }
+  .lens-sub {
+    text-transform: none;
+    letter-spacing: 0;
+    color: var(--muted);
+    font-weight: 400;
+    margin-left: 8px;
+    font-size: 12px;
+  }
+  .archetype-pill {
+    display: inline-block;
+    font-size: 11px;
+    padding: 3px 8px;
+    background: var(--bg);
+    border-radius: 4px;
+    color: var(--ink);
+    margin: 2px 4px 2px 0;
+    border: 1px solid var(--line);
+  }
+  .archetype-pill.primary {
+    background: var(--ink);
+    color: white;
+    border-color: var(--ink);
+  }
+  @media (max-width: 600px) {
+    .container { padding: 24px 16px 64px; }
+    h1 { font-size: 26px; }
+    .grid { grid-template-columns: 1fr; }
+    .modal { padding: 24px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>GTM Engineer Archetypes</h1>
+    <p class="subtitle">Nine shapes for one role. Organized by what each archetype ships, with secondary lenses for background, tools, and where they're hiring in 2026. Click a card for the full breakdown.</p>
+  </header>
+
+  <section class="hero">
+    <div class="hero-label">What is a GTM Engineer?</div>
+    <h2 class="hero-thesis">A GTM engineer treats revenue as a system to be built, not a process to be run.</h2>
+    <p class="hero-explainer">That single sentence carries most of it. Four traits show up across every archetype below.</p>
+    <div class="trait-grid">
+      <div class="trait-card">
+        <div class="trait-num">01</div>
+        <h3>Output-first thinking</h3>
+        <p>Orients around what gets shipped each week (campaigns, pipelines, scored lists, agents, dbt models) rather than tasks closed. The output is the spine of the role. Title and tools are secondary.</p>
+      </div>
+      <div class="trait-card">
+        <div class="trait-num">02</div>
+        <h3>Pipeline brain</h3>
+        <p>Decomposes any GTM problem the same way regardless of stack: seed data in, enrichment, transform/score, export to action. Clay's FETE is one branded version of how this person already thinks.</p>
+      </div>
+      <div class="trait-card">
+        <div class="trait-num">03</div>
+        <h3>Leverage over labor</h3>
+        <p>Constitutionally allergic to manual rework. If a rep is doing something twice, the first question is whether a system can do it once. Old RevOps wrote process docs. GTM engineers write the workflows that make the docs unnecessary.</p>
+      </div>
+      <div class="trait-card">
+        <div class="trait-num">04</div>
+        <h3>Force multiplier, not headline</h3>
+        <p>The work makes reps close faster, marketers reach further, finance reconcile cleaner. The GTM engineer rarely gets public credit and finds that more interesting than being the closer themselves.</p>
+      </div>
+    </div>
+    <div class="hero-quote">
+      The wedge that makes someone a GTM engineer instead of a RevOps person with title inflation is the differentiator on top of those four traits — AI fluency, Clay depth, code-level personalization, or warehouse modeling. Strip the differentiator and you are back to RevOps.
+    </div>
+    <div class="hero-oneliner">
+      <strong>The one-liner for recruiters:</strong> a GTM engineer builds the systems that turn revenue motions into infrastructure, so that the work compounds instead of repeating.
+    </div>
+  </section>
+
+  <div class="controls">
+    <div class="control-group">
+      <span class="control-label">Filter by background</span>
+      <span class="chip active" data-filter="all">All</span>
+      <span class="chip" data-filter="software">Software engineer</span>
+      <span class="chip" data-filter="sales">Ex-AE / SDR</span>
+      <span class="chip" data-filter="revops">RevOps / SF admin</span>
+      <span class="chip" data-filter="growth">Growth marketer</span>
+      <span class="chip" data-filter="data">Data analyst</span>
+      <span class="chip" data-filter="generalist">Generalist / founder</span>
+    </div>
+    <div class="view-toggle">
+      <button class="view-btn active" data-view="cards">Cards</button>
+      <button class="view-btn" data-view="matrix">Matrix</button>
+      <button class="view-btn" data-view="lenses">Clay Lenses</button>
+    </div>
+  </div>
+
+  <div id="cards-view">
+    <div class="grid" id="grid"></div>
+    <div class="axes">
+      <h3>Color legend</h3>
+      <div class="legend">
+        <span class="legend-item"><span class="legend-dot" style="background:var(--marketing)"></span>Marketing-led</span>
+        <span class="legend-item"><span class="legend-dot" style="background:var(--sales)"></span>Sales-led</span>
+        <span class="legend-item"><span class="legend-dot" style="background:var(--data)"></span>Data-led</span>
+        <span class="legend-item"><span class="legend-dot" style="background:var(--ai)"></span>AI-emergent</span>
+        <span class="legend-item"><span class="legend-dot" style="background:var(--generalist)"></span>Generalist / agency</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="matrix-view" style="display:none;">
+    <div class="matrix">
+      <table id="matrix-table"></table>
+    </div>
+  </div>
+
+  <div id="lenses-view" style="display:none;">
+    <div class="lenses-intro">
+      Clay segments the world along three axes: Use Case, Team, and Stage. Below shows where each Clay-named slice maps to an archetype.
+    </div>
+    <div class="lens-block">
+      <div class="lens-title">By Use Case <span class="lens-sub">Clay's nav: Use Cases (11 named)</span></div>
+      <div class="matrix">
+        <table id="lens-usecases-table"></table>
+      </div>
+    </div>
+    <div class="lens-block">
+      <div class="lens-title">By Team <span class="lens-sub">Clay's nav: By Team</span></div>
+      <div class="matrix">
+        <table id="lens-team-table"></table>
+      </div>
+    </div>
+    <div class="lens-block">
+      <div class="lens-title">By Stage <span class="lens-sub">Clay's nav: By Stage</span></div>
+      <div class="matrix">
+        <table id="lens-stage-table"></table>
+      </div>
+    </div>
+    <div class="lens-block">
+      <div class="lens-title">By Traditional Ops Umbrella <span class="lens-sub">RevOps, MOps, SalesOps, etc</span></div>
+      <div class="matrix">
+        <table id="lens-ops-table"></table>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-note">
+    <strong>How to use this.</strong> The grid is a quick scan. Click any card to see KPIs, real titles, and which companies are hiring in 2026. Filter by background to see which archetypes a given profile fits cleanest. The matrix view compares all nine on one screen. The Clay Lenses view shows how Clay's own segmentation (use case, team, stage, ops umbrella) maps onto the archetypes. Most senior GTM Engineers are a primary archetype plus a secondary, intentional about the combination.
+  </div>
+
+  <div class="footer-note" style="margin-top:16px;">
+    <strong>Specialist to Orchestrator.</strong> The promotion path goes specialist to orchestrator. Senior ICs and staff-level engineers stop building inside one motion and start deciding which tool owns which job across all of them. Reference architectures, write-back protocols, governance over what gets built where. The orchestrator is not a tenth archetype, it is what every archetype turns into at the senior level.
+  </div>
+
+  <div class="footer-note" style="margin-top:16px;">
+    <strong>Outside B2B SaaS.</strong> The framework is built on B2B SaaS patterns because that is where most named GTM Engineer postings live. The patterns translate to industrial supply, logistics, professional services, compliance, events, and B2B media. What changes is the source of signal and the tool stack outside Clay.
+  </div>
+
+  <div class="footer-note" style="margin-top:16px; border-left: 3px solid var(--accent); padding-left:20px;">
+    <strong>Is GTM Engineering just RevOps rebranded?</strong> The honest answer: GTM Engineering is RevOps plus something specific (AI fluency, Clay fluency, dbt depth, code-level personalization). Without the differentiator, "GTM Engineer" is RevOps with a re-priced title. The honest test: strip out AI, Clay, and custom code. If what remains is "configuring Salesforce and managing routing rules," you are looking at title inflation. Read the scope, not the title. Comp delta between the two can be 30-80% at the same scope, which is real arbitrage if you have the differentiating skill and a real pricing trap if you do not.
+  </div>
+
+  <div class="footer-note" style="margin-top:16px; border-left: 3px solid var(--marketing); padding-left:20px;">
+    <strong>The Entry Ramp.</strong> If you are interested in entering this field but not in it yet: pick one archetype based on your existing skills, build a public portfolio of three to five real Clay tables in that lane, plug into the operator community on LinkedIn and in Clay's Slack, then cold-message hiring managers with tailored work. Realistic timeline: 6-12 months from curious to first job. Three first-job targets in increasing difficulty: Forward-Deployed at Clay or partner agencies, Founding GTM at AI-native startups, then Outbound or Signal Engineer at Series A-C SaaS. Lead with portfolio, not resume. Full ramp guide in the markdown doc.
+  </div>
+</div>
+
+<div class="modal-backdrop" id="modal-backdrop">
+  <div class="modal" id="modal"></div>
+</div>
+
+<script>
+  const archetypes = [
+    {
+      num: 1,
+      name: "Outbound Engineer",
+      category: "marketing",
+      categoryLabel: "Marketing-led",
+      ships: "Personalized cold outreach campaigns at scale across email, LinkedIn, and multichannel sequences.",
+      opsUmbrella: "Marketing Operations (MOps), sometimes RevOps when central",
+      comp: "Mid $110-160K • Senior $160-220K",
+      compFull: "Junior $70-100K • Mid $110-160K • Senior $160-220K • Staff/Principal $220-300K. Top end pays more for the high-end RAG/personalization lane than for the list-builder lane.",
+      whoEnjoys: "People who love writing as a craft, get visceral satisfaction from a campaign that hits 8% reply rate vs 4%, and can be the 'person who emails strangers professionally' without flinching. Tight feedback loops (campaigns prove themselves in days) suit people who hate slow loops.",
+      aiNote: "Bifurcating in 2026. Low-end Outbound is being commoditized by AI SDRs (11x, Artisan, Regie) in volume plays. High-end Outbound (RAG personalization, AI-as-tool) is one of the hottest seats. Do not try to be the human version of an AI SDR. Build the orchestration layer AI SDRs cannot match.",
+      clayUse: "Maps to Clay's <b>Outbound</b> use case (and <b>ABM</b> when pointed at named target accounts). Find prospects, run multi-source enrichment waterfalls, transform with AI columns for personalization, export to Smartlead or Outreach.",
+      clayUseCases: ["Outbound", "ABM"],
+      tools: ["Clay", "Apollo", "Smartlead", "Instantly", "Lemlist", "HeyReach", "Outreach", "Salesloft"],
+      backgrounds: ["sales", "growth"],
+      backgroundFit: "Ex-SDR or BDR who learned automation, growth marketer with technical chops, ex-agency operator. The strongest signal is someone who has personally booked meetings before, then scaled it through a system.",
+      titles: ["Outbound Engineer", "Cold Email Specialist", "Outbound Architect", "Lead Generation Engineer", "GTM Engineer"],
+      hiring: "Almost every Series A through C SaaS, plus the agencies that productize it (Cargo, Beanstalk, OutboundOS, Common Room partners).",
+      kpis: "Meetings booked, reply rates, pipeline sourced from cold, cost per meeting.",
+      ceiling: "High if paired with another archetype. On its own, the work is commoditizing fast as agencies and AI SDRs eat the lower end."
+    },
+    {
+      num: 2,
+      name: "Analytics Engineer for GTM",
+      category: "data",
+      categoryLabel: "Data-led (Foundation)",
+      ships: "The GTM data foundation. dbt models, semantic layers, dashboards, scoring fields, and segment definitions that everyone downstream reads from.",
+      opsUmbrella: "Revenue Operations (RevOps), BizOps, or Data Engineering",
+      comp: "Mid $150-220K • Senior $220-320K",
+      compFull: "Junior $100-140K • Mid $150-220K • Senior $220-320K • Staff/Principal $300-450K+. Highest ceiling outside of AI-native AI GTM seats. At Stripe, Notion, Anthropic, and similar mature data orgs, total comp clears $300K reliably at the senior level.",
+      whoEnjoys: "People who think in entity-relationship diagrams unprompted, find a clean dbt model emotionally satisfying, would rather build the source of truth than the activation. Tolerant of (or energized by) being invisible when the system works. Patient enough for the long feedback loop.",
+      clayUse: "Maps to Clay's <b>TAM sourcing</b> and <b>Reverse ETL</b> use cases. Build scored target lists that get ported back into dbt CASE WHEN logic, then push modeled segments from the warehouse into the CRM and outbound stack so rep, marketer, and finance read from the same layer.",
+      clayUseCases: ["TAM sourcing", "Reverse ETL"],
+      tools: ["dbt", "Snowflake", "BigQuery", "Sigma", "Looker", "Hex", "Census", "Hightouch", "Clay"],
+      backgrounds: ["data"],
+      backgroundFit: "Analytics engineer, data analyst with revenue domain depth, sales analytics or revenue ops analyst who learned modeling. The differentiator is fluency in both SQL and the GTM motion the data feeds.",
+      titles: ["Analytics Engineer", "GTM Analytics Engineer", "Revenue Analytics Engineer", "GTM Data Engineer"],
+      hiring: "Census, Hightouch, dbt Labs, Hex, Atlan, larger SaaS with mature data orgs (Snowflake, Databricks, Stripe, Notion).",
+      kpis: "Data quality and trust, time to insight, model adoption, downstream NPS from sales and marketing.",
+      ceiling: "Very high. Often graduates into Head of Data or Head of GTM Analytics. Stable demand, less buzz."
+    },
+    {
+      num: 3,
+      name: "RevOps Systems Engineer",
+      category: "data",
+      categoryLabel: "Data-led (Process)",
+      ships: "The process and workflow layer inside the CRM. Salesforce or HubSpot architecture, routing, lifecycle stages, CPQ, territory rules.",
+      opsUmbrella: "Revenue Operations (RevOps), sometimes SalesOps or MOps when scoped",
+      comp: "Mid $130-180K • Senior $180-260K",
+      compFull: "Junior $90-130K • Mid $130-180K • Senior $180-260K • Staff/Principal $260-350K. Stable comp band, well-understood ladder, less variance than the AI-leaning archetypes.",
+      whoEnjoys: "People who get satisfaction from systems clicking into place, enjoy the 'my routing rule just saved 4 hours of manual work' win, comfortable with the political work of getting stakeholders aligned on a process change. Patient with bureaucracy. Process-design brain rather than experimental brain.",
+      clayUse: "Maps to Clay's <b>CRM enrichment</b>, <b>Automated inbound</b>, and <b>Territory planning</b> use cases. Bulk enrichment of CRM records, account match keys and dedup pipelines, real-time enrichment and routing on inbound form fills, and turning a scored TAM into clean territory carve-ups for reps.",
+      clayUseCases: ["CRM enrichment", "Automated inbound", "Territory planning"],
+      tools: ["Salesforce", "HubSpot", "Default", "LeanData", "Distribute.io", "Workato", "Tray", "Clay"],
+      backgrounds: ["revops"],
+      backgroundFit: "Salesforce admin, marketing ops manager, business systems engineer, RevOps analyst.",
+      titles: ["RevOps Engineer", "GTM Systems Engineer", "Marketing Ops Engineer", "Salesforce Architect", "Business Systems Engineer"],
+      hiring: "Mid-market and enterprise SaaS where the CRM is a load-bearing piece of the business (Ramp, Rippling, Brex, Gong).",
+      kpis: "Routing speed, data hygiene scores, lead-to-MQL conversion, time-to-first-touch, system uptime.",
+      ceiling: "High inside RevOps. Often graduates into RevOps leadership. Risk is staying tactical and not building a wedge that translates outside one company."
+    },
+    {
+      num: 4,
+      name: "AE Augmenter",
+      category: "sales",
+      categoryLabel: "Sales-led",
+      ships: "Per-rep tooling. Account research dossiers, pre-call briefs, signal-based prospect lists per rep, custom workflows for territory or vertical pods.",
+      opsUmbrella: "Sales Operations (SalesOps), Sales Engineering, Sales Productivity",
+      comp: "Mid $120-180K • Senior $180-250K",
+      compFull: "Junior $80-120K • Mid $120-180K • Senior $180-250K • Staff/Principal $250-320K. Frequently paid via sales-aligned bonus or SPIFF structures rather than pure base, especially at sales-led enterprise companies.",
+      whoEnjoys: "People who like sales and salespeople, enjoy the 1:1 nature of helping a single rep close a single deal, get satisfaction from being 'the person reps go to,' comfortable being a force multiplier rather than the headline. Often introverted operators who pair well with extroverted closers.",
+      clayUse: "Maps to three of Clay's named use cases: <b>Account research</b> (deep dossiers), <b>Rep prospecting</b> (per-AE prospect lists), and <b>Rep assist</b> (in-deal augmentation that fires while the rep is mid-cycle).",
+      clayUseCases: ["Account research", "Rep prospecting", "Rep assist"],
+      tools: ["Clay", "LinkedIn Sales Nav", "Crunchbase", "Perplexity", "Claude", "Gong", "Chorus"],
+      backgrounds: ["sales"],
+      backgroundFit: "Top-performing AE who got curious about automation, ex-sales engineer, sales-adjacent operator with strong product intuition.",
+      titles: ["Sales Engineer", "Account Research Manager", "GTM Engineer (Sales)", "Sales Productivity Engineer", "Field Engineer"],
+      hiring: "Enterprise B2B with high ACVs where each account is worth deep custom work (Snowflake, Figma, Vanta, Gong, larger Salesforce-style motions).",
+      kpis: "Per-rep pipeline sourced, win rates on researched accounts, AE productivity ratios, account penetration.",
+      ceiling: "Medium to high. Highly visible to revenue leadership but the role is rare and depends on a CRO who funds it."
+    },
+    {
+      num: 5,
+      name: "Signal Engineer",
+      category: "marketing",
+      categoryLabel: "Marketing-led (Allbound)",
+      ships: "Real-time trigger systems. Funding rounds, job changes, tech stack changes, product visits, LinkedIn engagement piped into Slack alerts, CRM tasks, or sequences.",
+      opsUmbrella: "Marketing Operations (MOps) or Demand Gen Ops, RevOps when central",
+      comp: "Mid $130-200K • Senior $200-280K",
+      compFull: "Junior $90-130K • Mid $130-200K • Senior $200-280K • Staff/Principal $280-380K. PLG-led companies pay the upper range. Roles that explicitly bridge product signals to sales motion (PLG-to-Sales sub-specialty) command a premium.",
+      whoEnjoys: "Pattern-recognition brain, people who get excited about novel signals (the 'I just figured out you can detect this' feeling), comfortable with speculative work where most signals do not pay off but the ones that do are massive. Tolerant of false positives.",
+      clayUse: "Aggregation and enrichment layer for signals. Heavy overlap with Clay's <b>PLG assist</b> use case when the signals are product-led (sign-ups, activation events, key actions) and need to be converted into a sales motion.",
+      clayUseCases: ["PLG assist"],
+      tools: ["Clay", "Common Room", "Pocus", "Default", "Koala", "RB2B", "ZoomInfo Intent", "BuiltWith"],
+      backgrounds: ["growth", "software"],
+      backgroundFit: "Growth marketer with intent data fluency, ex-PMM with technical chops, growth hacker, sometimes ex-product manager.",
+      titles: ["Allbound Engineer", "Signal Engineer", "Pipeline Engineer", "Growth Engineer", "GTM Engineer"],
+      hiring: "PLG-led B2B and modern outbound shops (Vercel, Linear, Notion, Pocus, Default, Clay itself, AI infrastructure category).",
+      kpis: "Signal-to-meeting conversion, time-to-touch on triggers, allbound pipeline percentage, signal coverage.",
+      ceiling: "High. One of the highest-leverage emerging shapes because allbound is replacing pure outbound at any company with inbound or product signals to capture."
+    },
+    {
+      num: 6,
+      name: "Lifecycle Engineer",
+      category: "marketing",
+      categoryLabel: "Marketing-led (Retention)",
+      ships: "Customer lifecycle automation. Onboarding, expansion, churn-warning, NPS, renewal triggers, cross-sell flows. Lives between product analytics and CRM.",
+      opsUmbrella: "Marketing Operations (MOps), Customer Operations / CS Ops",
+      comp: "Mid $130-190K • Senior $190-260K",
+      compFull: "Junior $90-130K • Mid $130-190K • Senior $190-260K • Staff/Principal $260-350K. PLG SaaS and consumer-tech employers (Notion, Linear, Headspace, Coursera) pay the upper range. Often paired with retention or NRR-linked bonuses.",
+      whoEnjoys: "People who think in user journeys and emotional states, care about long-term retention more than short-term acquisition, comfortable with feedback loops that take weeks or months to show. Empathy-led rather than urgency-led.",
+      clayUse: "Occasional. Center of gravity is in Customer.io, Braze, Iterable, and reverse ETL. Clay shows up as a secondary owner of <b>PLG assist</b> and <b>Reverse ETL</b> use cases (enriching expansion-ready accounts, finding net-new contacts at existing customer accounts).",
+      clayUseCases: ["PLG assist (secondary)", "Reverse ETL (secondary)"],
+      tools: ["Customer.io", "Braze", "Iterable", "Census", "Hightouch", "dbt", "Segment", "Amplitude"],
+      backgrounds: ["growth", "revops"],
+      backgroundFit: "Lifecycle marketer, retention-focused growth marketer, CS ops with technical bent, marketing automation specialist.",
+      titles: ["Lifecycle Engineer", "Retention Engineer", "CRM Engineer (marketing)", "Marketing Automation Engineer"],
+      hiring: "PLG SaaS and consumer tech (Notion, Linear, Headspace, Calm, Coursera, Duolingo, Webflow). Any company where retention drives revenue more than new logo acquisition.",
+      kpis: "Activation rates, retention curves, NRR, expansion percentage, churn.",
+      ceiling: "Very high in PLG companies, where the role is closer to the revenue line than at sales-led companies."
+    },
+    {
+      num: 7,
+      name: "AI GTM Engineer",
+      category: "ai",
+      categoryLabel: "AI-emergent",
+      ships: "Research agents, AI SDR systems, intent classifiers, custom RAG over deal or call data, prompt chains that replace manual research.",
+      opsUmbrella: "Still forming. RevOps, GTM Ops, sometimes 'GTM AI' as a new category",
+      comp: "Mid $160-260K • Senior $250-400K+",
+      compFull: "Junior $110-160K • Mid $160-260K • Senior $250-400K+ • Staff/Principal $350-600K+. Widest variance of the nine. AI-native companies (11x, Artisan, Anthropic, Clay) pay the top end with significant equity. Comp can clear $700K total at staff level when equity is included.",
+      whoEnjoys: "People who treat prompting as a craft, tolerate non-determinism as a normal state, like building things that 'feel like magic' even though they know how the trick works. Comfortable with the maintenance burden of LLM-based systems (drift, eval, cost). Often software engineers who got bored of CRUD apps.",
+      clayUse: "Heavy. AI columns inside Clay, Claygent for agentic workflows, but also building beyond Clay with raw OpenAI or Anthropic APIs when Clay's surface is too narrow. Often co-owns <b>Rep assist</b> with the AE Augmenter when the assist is agent-driven.",
+      clayUseCases: ["Rep assist (co-owner)", "all use cases when AI is the wrapper"],
+      tools: ["Clay", "OpenAI API", "Anthropic API", "Relevance AI", "n8n", "LangChain", "Claude Code", "Cursor"],
+      backgrounds: ["software", "data"],
+      backgroundFit: "Software engineer who pivoted to GTM, ML-curious ops person, prompt engineer, growth engineer with API fluency.",
+      titles: ["AI GTM Engineer", "AI SDR Engineer", "AI Solutions Engineer", "GTM AI Lead", "Forward Deployed Engineer"],
+      hiring: "AI-native companies (11x, Artisan, Regie, Clay, Apollo, Anthropic), forward-thinking SaaS, AI-first consultancies.",
+      kpis: "Automation percentage, agent-handled volume, output quality versus cost, accuracy and reply rates on AI-generated work.",
+      ceiling: "Highest leverage of the nine right now. The role barely existed two years ago and is the fastest-growing variant. Comp ranges are wide because nobody has settled on the market price."
+    },
+    {
+      num: 8,
+      name: "Founding GTM Engineer",
+      category: "generalist",
+      categoryLabel: "Generalist",
+      ships: "Whatever moves pipeline. Outbound this week, CRM cleanup next week, lifecycle automation the week after, an AI agent the week after that.",
+      opsUmbrella: "GTM Operations (broadest), or just 'Operations' when one person owns it all",
+      comp: "Mid $130-180K + 0.25-1% equity",
+      compFull: "Junior $90-140K + 0.25-1% equity • Mid $130-180K + 0.25-1% • Senior $170-220K + significant equity. Cash comp is usually below specialist roles, but equity at the right AI-native startup can dwarf any other archetype's total upside.",
+      whoEnjoys: "High tolerance for ambiguity. People who get energized by 'I have to figure out what to do this week with no playbook.' Comfortable owning revenue without instruction. Low ego, scrappy, equally happy writing a cold email and a SQL query and a Notion doc on the same day.",
+      clayUse: "Heavy and varied. Often their daily driver because Clay covers many use cases without requiring a separate hire for each. At a 15-person startup, the same person might run <b>Outbound</b>, <b>CRM enrichment</b>, and <b>TAM sourcing</b> in the same week.",
+      clayUseCases: ["any of the 11, depending on the week"],
+      tools: ["Clay", "HubSpot", "Salesforce", "Zapier", "n8n", "dbt", "Customer.io", "custom scripts"],
+      backgrounds: ["generalist", "software", "sales"],
+      backgroundFit: "Generalist operator, ex-founder, jack-of-all-trades who has done sales, marketing, and ops in some combination. Often someone who does not fit cleanly in one of the eight other archetypes.",
+      titles: ["Founding GTM Engineer", "Head of GTM Ops", "GTM Engineer #1", "Revenue Engineer", "Chief of Staff"],
+      hiring: "Seed to Series A startups (10 to 50 people), AI-native startups, founder-led SaaS.",
+      kpis: "Pipeline, then revenue, then everything else. The CEO or CRO is the customer, and the goalpost moves quarterly.",
+      ceiling: "Depends entirely on what the company becomes. Best-case path is graduating into VP of GTM Ops or RevOps leader as the company scales."
+    },
+    {
+      num: 9,
+      name: "Agency / Consultant",
+      category: "generalist",
+      categoryLabel: "Agency",
+      ships: "Done-for-you GTM infrastructure for client companies. Outbound systems, enriched lists, Clay tables built and handed off, monthly retainer work.",
+      opsUmbrella: "External / Forward-Deployed GTME (Clay's term, borrowed from the Palantir model)",
+      comp: "FD at Clay $220-300K • Top independents $50-100K+/mo",
+      compFull: "In-house Forward-Deployed at Clay: $150-220K junior to mid, $220-300K senior, $300-400K+ at staff. Top partner agencies (Cargo, Pump, Beanstalk) pay similarly. Independent Clay Experts: $5-15K MRR entry, $50-100K+/mo at the top, with the very top operators clearing seven-figure annual revenue solo.",
+      whoEnjoys: "People who like customer-facing work, enjoy the sale-then-ship combo, comfortable being measured by client retention and project outcomes rather than pipeline. Entrepreneurial about their own book of business. Often consultants who like building or builders who like client variety.",
+      clayUse: "Their daily driver. Clay is essentially the product they sell. Most agency engagements center on <b>Outbound</b>, <b>CRM enrichment</b>, and <b>ABM</b>, with TAM sourcing as a common discovery deliverable.",
+      clayUseCases: ["Outbound", "CRM enrichment", "ABM", "TAM sourcing"],
+      tools: ["Clay", "Smartlead", "Instantly", "Apollo", "Salesforce", "HubSpot"],
+      backgrounds: ["sales", "growth", "generalist"],
+      backgroundFit: "Anyone with output and business sense. Ex-SDR, ex-marketer, ex-engineer who can sell. The differentiator is being able to close a client and ship the work, both.",
+      titles: ["Clay Expert", "Outbound Consultant", "GTM Consultant", "Fractional GTM Engineer", "Founder of (your name) Consulting"],
+      hiring: "Agencies (Cargo, Beanstalk, La Growth Machine partner network), self-employed solo operators on LinkedIn, fractional placements at startups too small for a full-time hire.",
+      kpis: "Client retention, results delivered, project close rates, MRR or retainer book size.",
+      ceiling: "High autonomy and income, but lower ceiling on equity and category influence than an in-house wedge at a category-defining company."
+    }
+  ];
+
+  // Annotate archetypes with team and stage data
+  const teamMap = {
+    1: "Marketing", 2: "GTM Ops", 3: "GTM Ops", 4: "Sales",
+    5: "Marketing", 6: "Marketing", 7: "GTM Ops",
+    8: "Founder/CRO", 9: "External"
+  };
+  const stageMap = {
+    1: "Both", 2: "Enterprise", 3: "Enterprise", 4: "Enterprise",
+    5: "Both", 6: "Enterprise", 7: "Both",
+    8: "Startup", 9: "Both"
+  };
+  archetypes.forEach(a => { a.team = teamMap[a.num]; a.stage = stageMap[a.num]; });
+
+  const useCaseMap = [
+    { useCase: "Outbound", primary: 1, secondary: [8, 9] },
+    { useCase: "ABM", primary: 1, secondary: [5, 9] },
+    { useCase: "CRM enrichment", primary: 3, secondary: [2, 9] },
+    { useCase: "Automated inbound", primary: 3, secondary: [5] },
+    { useCase: "Territory planning", primary: 3, secondary: [2] },
+    { useCase: "Reverse ETL", primary: 2, secondary: [6] },
+    { useCase: "TAM sourcing", primary: 2, secondary: [1, 9] },
+    { useCase: "Account research", primary: 4, secondary: [8] },
+    { useCase: "Rep prospecting", primary: 4, secondary: [1] },
+    { useCase: "Rep assist", primary: 4, secondary: [7] },
+    { useCase: "PLG assist", primary: 5, secondary: [6] }
+  ];
+
+  const grid = document.getElementById("grid");
+  const matrixTable = document.getElementById("matrix-table");
+  const modalBackdrop = document.getElementById("modal-backdrop");
+  const modal = document.getElementById("modal");
+
+  function renderCards() {
+    grid.innerHTML = archetypes.map(a => `
+      <div class="card" data-num="${a.num}" data-backgrounds="${a.backgrounds.join(',')}">
+        <span class="card-num">${String(a.num).padStart(2,'0')}</span>
+        <span class="card-tag ${a.category}">${a.categoryLabel}</span>
+        <h3>${a.name}</h3>
+        <div class="ops-umbrella">${a.opsUmbrella}</div>
+        <div class="ships">
+          <strong>What they ship</strong>
+          ${a.ships}
+        </div>
+        <div class="clay-use">
+          <strong style="font-size:11px;text-transform:uppercase;letter-spacing:0.04em;color:var(--accent);display:block;margin-bottom:2px;">Clay use</strong>
+          ${a.clayUse}
+        </div>
+        <div class="comp-line">${a.comp}</div>
+        <div class="meta">
+          ${a.tools.slice(0,4).map(t => `<span class="meta-pill">${t}</span>`).join('')}
+          ${a.tools.length > 4 ? `<span class="meta-pill">+${a.tools.length-4}</span>` : ''}
+        </div>
+        <div class="card-expand-hint">Click for full breakdown →</div>
+      </div>
+    `).join('');
+    document.querySelectorAll('.card').forEach(card => {
+      card.addEventListener('click', () => {
+        const num = parseInt(card.dataset.num);
+        openModal(archetypes.find(a => a.num === num));
+      });
+    });
+  }
+
+  function renderMatrix() {
+    matrixTable.innerHTML = `
+      <thead>
+        <tr>
+          <th>Archetype</th>
+          <th>What they ship</th>
+          <th>Clay use</th>
+          <th>Best background</th>
+          <th>KPIs</th>
+          <th>Hiring (2026)</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${archetypes.map(a => `
+          <tr>
+            <td class="archetype-cell">
+              <span class="card-tag ${a.category}" style="margin-bottom:6px;">${a.categoryLabel}</span><br>
+              ${String(a.num).padStart(2,'0')}. ${a.name}
+            </td>
+            <td>${a.ships}</td>
+            <td>${a.clayUse}</td>
+            <td>${a.backgroundFit}</td>
+            <td>${a.kpis}</td>
+            <td>${a.hiring}</td>
+          </tr>
+        `).join('')}
+      </tbody>
+    `;
+  }
+
+  function archetypePill(num, isPrimary) {
+    const a = archetypes.find(x => x.num === num);
+    return `<span class="archetype-pill ${isPrimary ? 'primary' : ''}">${String(a.num).padStart(2,'0')} ${a.name}</span>`;
+  }
+
+  function renderLenses() {
+    // Use Cases table
+    document.getElementById('lens-usecases-table').innerHTML = `
+      <thead>
+        <tr><th>Clay use case</th><th>Primary archetype</th><th>Also touches</th></tr>
+      </thead>
+      <tbody>
+        ${useCaseMap.map(u => `
+          <tr>
+            <td class="archetype-cell">${u.useCase}</td>
+            <td>${archetypePill(u.primary, true)}</td>
+            <td>${u.secondary.map(s => archetypePill(s, false)).join('')}</td>
+          </tr>
+        `).join('')}
+      </tbody>
+    `;
+
+    // By Team table
+    const teams = ["GTM Ops", "Marketing", "Sales", "Founder/CRO", "External"];
+    document.getElementById('lens-team-table').innerHTML = `
+      <thead>
+        <tr><th>Clay team</th><th>Archetypes that live here</th></tr>
+      </thead>
+      <tbody>
+        ${teams.map(t => {
+          const matches = archetypes.filter(a => a.team === t);
+          if (matches.length === 0) return '';
+          return `
+            <tr>
+              <td class="archetype-cell">${t}</td>
+              <td>${matches.map(a => archetypePill(a.num, false)).join('')}</td>
+            </tr>
+          `;
+        }).join('')}
+      </tbody>
+    `;
+
+    // By Ops Umbrella table
+    const opsUmbrellas = [
+      { name: "Revenue Operations (RevOps)", numbers: [2, 3, 7] },
+      { name: "Marketing Operations (MOps)", numbers: [1, 5, 6] },
+      { name: "Sales Operations (SalesOps)", numbers: [4, 3] },
+      { name: "GTM Operations (GTMOps)", numbers: [8, 7] },
+      { name: "Customer Operations (CS Ops)", numbers: [6] },
+      { name: "External / Forward-Deployed", numbers: [9] }
+    ];
+    document.getElementById('lens-ops-table').innerHTML = `
+      <thead>
+        <tr><th>Umbrella</th><th>Archetypes that live here</th></tr>
+      </thead>
+      <tbody>
+        ${opsUmbrellas.map(o => `
+          <tr>
+            <td class="archetype-cell">${o.name}</td>
+            <td>${o.numbers.map(n => archetypePill(n, false)).join('')}</td>
+          </tr>
+        `).join('')}
+      </tbody>
+    `;
+
+    // By Stage table
+    const stages = [
+      { name: "Startup (seed to Series B)", filter: ["Startup", "Both"] },
+      { name: "Enterprise (Series C+)", filter: ["Enterprise", "Both"] },
+      { name: "Stage-agnostic", filter: ["Both"] }
+    ];
+    document.getElementById('lens-stage-table').innerHTML = `
+      <thead>
+        <tr><th>Stage</th><th>Archetypes that fit</th></tr>
+      </thead>
+      <tbody>
+        ${stages.map(s => {
+          const matches = archetypes.filter(a => s.filter.includes(a.stage));
+          return `
+            <tr>
+              <td class="archetype-cell">${s.name}</td>
+              <td>${matches.map(a => archetypePill(a.num, false)).join('')}</td>
+            </tr>
+          `;
+        }).join('')}
+      </tbody>
+    `;
+  }
+
+  function openModal(a) {
+    modal.innerHTML = `
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+      <span class="card-tag ${a.category}">${a.categoryLabel}</span>
+      <h2>${String(a.num).padStart(2,'0')}. ${a.name}</h2>
+      <p class="modal-tagline">${a.ships}</p>
+
+      <div class="modal-section">
+        <h4>Clay use</h4>
+        <p>${a.clayUse}</p>
+      </div>
+
+      <div class="modal-section">
+        <h4>Clay use cases they own</h4>
+        <div class="tag-list">${(a.clayUseCases || []).map(t => `<span class="tag">${t}</span>`).join('')}</div>
+      </div>
+
+      <div class="modal-section">
+        <h4>Where they sit</h4>
+        <div class="tag-list">
+          <span class="tag">Team: ${a.team}</span>
+          <span class="tag">Stage: ${a.stage}</span>
+        </div>
+      </div>
+
+      <div class="modal-section">
+        <h4>Traditional ops umbrella</h4>
+        <p>${a.opsUmbrella || 'Not applicable'}</p>
+      </div>
+
+      <div class="modal-section">
+        <h4>Tool stack</h4>
+        <div class="tag-list">${a.tools.map(t => `<span class="tag">${t}</span>`).join('')}</div>
+      </div>
+
+      <div class="modal-section">
+        <h4>Best background fit</h4>
+        <p>${a.backgroundFit}</p>
+      </div>
+
+      <div class="modal-section">
+        <h4>Real titles you'll see</h4>
+        <div class="tag-list">${a.titles.map(t => `<span class="tag">${t}</span>`).join('')}</div>
+      </div>
+
+      <div class="modal-section">
+        <h4>Who's hiring (2026)</h4>
+        <p>${a.hiring}</p>
+      </div>
+
+      <div class="modal-section">
+        <h4>KPIs they own</h4>
+        <p>${a.kpis}</p>
+      </div>
+
+      <div class="modal-section">
+        <h4>Career ceiling</h4>
+        <p>${a.ceiling}</p>
+      </div>
+
+      <div class="modal-section">
+        <h4>Compensation (US total comp, 2026)</h4>
+        <p>${a.compFull}</p>
+      </div>
+
+      <div class="modal-section">
+        <h4>Who enjoys this work</h4>
+        <p>${a.whoEnjoys}</p>
+      </div>
+
+      ${a.aiNote ? `
+      <div class="modal-section" style="background:rgba(212,84,26,0.06);padding:14px 16px;border-radius:8px;border-left:3px solid var(--accent);">
+        <h4 style="color:var(--accent);">2026 reality check: AI SDR transformation</h4>
+        <p>${a.aiNote}</p>
+      </div>
+      ` : ''}
+    `;
+    modalBackdrop.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    modalBackdrop.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  modalBackdrop.addEventListener('click', e => {
+    if (e.target === modalBackdrop) closeModal();
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeModal();
+  });
+
+  // Filter logic
+  document.querySelectorAll('.chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      const filter = chip.dataset.filter;
+      document.querySelectorAll('.card').forEach(card => {
+        if (filter === 'all' || card.dataset.backgrounds.split(',').includes(filter)) {
+          card.classList.remove('hidden');
+        } else {
+          card.classList.add('hidden');
+        }
+      });
+    });
+  });
+
+  // View toggle
+  document.querySelectorAll('.view-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const view = btn.dataset.view;
+      document.getElementById('cards-view').style.display = view === 'cards' ? '' : 'none';
+      document.getElementById('matrix-view').style.display = view === 'matrix' ? '' : 'none';
+      document.getElementById('lenses-view').style.display = view === 'lenses' ? '' : 'none';
+    });
+  });
+
+  renderCards();
+  renderMatrix();
+  renderLenses();
+</script>
+</body>
+</html>
