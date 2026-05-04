@@ -1,0 +1,2172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Unofficial Field Guide to Claude Code and Cowork</title>
+<style>
+  :root {
+    --bg: #fbfaf7;
+    --ink: #1a1a1a;
+    --ink-soft: #4a4a4a;
+    --ink-faint: #8a8a8a;
+    --rule: #e5e1d8;
+    --accent: #c8542b;
+    --accent-soft: #fbece3;
+    --callout-warn-bg: #fff6e6;
+    --callout-warn-border: #e8a838;
+    --callout-tip-bg: #eef4ec;
+    --callout-tip-border: #4a7a4a;
+    --callout-confuse-bg: #f3ecf6;
+    --callout-confuse-border: #7a4a9a;
+    --code-bg: #f2efe8;
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    --serif: Georgia, "Iowan Old Style", "Palatino Linotype", serif;
+    --sans: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Helvetica, Arial, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: var(--serif);
+    font-size: 17px;
+    line-height: 1.65;
+    color: var(--ink);
+    background: var(--bg);
+  }
+  .layout {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 0;
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+  nav.toc {
+    position: sticky;
+    top: 0;
+    align-self: start;
+    height: 100vh;
+    overflow-y: auto;
+    padding: 28px 20px 40px 24px;
+    border-right: 1px solid var(--rule);
+    font-family: var(--sans);
+    font-size: 13.5px;
+    line-height: 1.45;
+    background: var(--bg);
+  }
+  nav.toc h3 {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin: 0 0 10px 0;
+    font-weight: 600;
+  }
+  nav.toc ol {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 18px 0;
+  }
+  nav.toc li { margin: 0; padding: 0; }
+  nav.toc a {
+    display: block;
+    padding: 5px 8px;
+    margin-left: -8px;
+    border-radius: 4px;
+    color: var(--ink-soft);
+    text-decoration: none;
+    border-left: 2px solid transparent;
+  }
+  nav.toc a:hover { background: var(--accent-soft); color: var(--ink); }
+  nav.toc a.active {
+    color: var(--accent);
+    border-left-color: var(--accent);
+    background: var(--accent-soft);
+  }
+  main {
+    padding: 48px 64px 120px;
+    max-width: 820px;
+  }
+  header.doc-head {
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 32px;
+    margin-bottom: 40px;
+  }
+  header.doc-head h1 {
+    font-family: var(--serif);
+    font-size: 40px;
+    line-height: 1.1;
+    margin: 0 0 12px 0;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  header.doc-head .sub {
+    color: var(--ink-soft);
+    font-style: italic;
+    font-size: 19px;
+    margin: 0 0 12px 0;
+  }
+  header.doc-head .author-line {
+    font-family: var(--sans);
+    font-size: 14px;
+    color: var(--ink-soft);
+    margin: 0 0 20px 0;
+    letter-spacing: 0.01em;
+  }
+  header.doc-head .author-line strong {
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .author-note {
+    margin: 22px 0 0 0;
+    padding: 18px 22px;
+    background: white;
+    border: 1px solid var(--rule);
+    border-left: 4px solid var(--accent);
+    border-radius: 6px;
+    font-size: 15.5px;
+    line-height: 1.6;
+    color: var(--ink-soft);
+  }
+  /* What's New */
+  .whats-new-block {
+    margin: 32px 0;
+    padding: 22px 26px;
+    background: white;
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+  }
+  .whats-new-block h3.wn-head {
+    margin: 0 0 4px 0;
+    padding: 0;
+    border: none;
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .whats-new-block .wn-sub {
+    font-family: var(--sans);
+    font-size: 12.5px;
+    color: var(--ink-faint);
+    margin: 0 0 18px 0;
+    font-style: italic;
+  }
+  .whats-new-entries {
+    font-family: var(--sans);
+    font-size: 14.5px;
+    line-height: 1.55;
+  }
+  .wn-day {
+    margin: 0 0 14px 0;
+    padding-bottom: 14px;
+    border-bottom: 1px dashed var(--rule);
+  }
+  .wn-day:last-child { border-bottom: none; padding-bottom: 0; margin-bottom: 0; }
+  .wn-date {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--ink-faint);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    margin: 0 0 6px 0;
+  }
+  .wn-day ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .wn-day li {
+    padding: 3px 0 3px 18px;
+    position: relative;
+    margin: 0 0 4px 0;
+    color: var(--ink);
+  }
+  .wn-day li::before {
+    content: "•";
+    position: absolute;
+    left: 4px;
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .wn-day li.wn-breaking::before { content: "!"; color: var(--callout-warn-border); }
+  .wn-day li .wn-meta {
+    color: var(--ink-faint);
+    font-size: 12.5px;
+    font-style: italic;
+  }
+  .wn-day li a { color: var(--ink-soft); }
+  .author-note p { margin: 0 0 12px 0; }
+  .author-note p:last-child { margin-bottom: 0; }
+  .author-note strong { color: var(--ink); }
+  .badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    font-family: var(--sans);
+    font-size: 12.5px;
+  }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 11px;
+    border-radius: 999px;
+    background: var(--code-bg);
+    color: var(--ink-soft);
+    border: 1px solid var(--rule);
+  }
+  .badge.accent { background: var(--accent-soft); color: var(--accent); border-color: #f0c8b4; }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+  h2 {
+    font-size: 30px;
+    line-height: 1.15;
+    margin: 72px 0 8px 0;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    padding-top: 24px;
+    border-top: 2px solid var(--ink);
+    scroll-margin-top: 20px;
+  }
+  h2 .part-num {
+    display: block;
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  h3 {
+    font-size: 22px;
+    margin: 40px 0 10px 0;
+    font-weight: 600;
+    letter-spacing: -0.005em;
+    scroll-margin-top: 20px;
+  }
+  h4 {
+    font-size: 17px;
+    margin: 28px 0 6px 0;
+    font-weight: 700;
+    font-family: var(--sans);
+    letter-spacing: 0.01em;
+  }
+  p { margin: 0 0 16px 0; }
+  a { color: var(--accent); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 2px; }
+  code {
+    font-family: var(--mono);
+    font-size: 0.88em;
+    background: var(--code-bg);
+    padding: 1px 6px;
+    border-radius: 3px;
+  }
+  pre {
+    background: var(--code-bg);
+    border-radius: 6px;
+    padding: 16px 18px;
+    overflow-x: auto;
+    font-size: 13.5px;
+    line-height: 1.55;
+    margin: 16px 0 24px 0;
+    border: 1px solid var(--rule);
+  }
+  pre code { background: none; padding: 0; font-size: inherit; }
+  ul, ol { margin: 0 0 16px 0; padding-left: 24px; }
+  li { margin-bottom: 6px; }
+  blockquote {
+    border-left: 3px solid var(--accent);
+    margin: 0 0 20px 0;
+    padding: 4px 0 4px 18px;
+    color: var(--ink-soft);
+    font-style: italic;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 16px 0 24px 0;
+    font-family: var(--sans);
+    font-size: 14px;
+  }
+  th, td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+  th { background: var(--code-bg); font-weight: 600; }
+  .callout {
+    margin: 20px 0;
+    padding: 14px 18px 14px 42px;
+    border-radius: 6px;
+    border-left: 4px solid;
+    font-size: 15.5px;
+    position: relative;
+    line-height: 1.55;
+  }
+  .callout::before {
+    position: absolute;
+    left: 14px;
+    top: 12px;
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 13px;
+  }
+  .callout.confuse {
+    background: var(--callout-confuse-bg);
+    border-left-color: var(--callout-confuse-border);
+  }
+  .callout.confuse::before {
+    content: "⚠";
+    color: var(--callout-confuse-border);
+    font-size: 16px;
+  }
+  .callout.tip {
+    background: var(--callout-tip-bg);
+    border-left-color: var(--callout-tip-border);
+  }
+  .callout.tip::before { content: "✓"; color: var(--callout-tip-border); font-size: 16px; }
+  .callout.warn {
+    background: var(--callout-warn-bg);
+    border-left-color: var(--callout-warn-border);
+  }
+  .callout.warn::before { content: "!"; color: var(--callout-warn-border); font-size: 16px; }
+  .callout strong:first-child {
+    display: block;
+    font-family: var(--sans);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 11.5px;
+    color: var(--ink-soft);
+    margin-bottom: 4px;
+    font-style: normal;
+  }
+  .callout p:last-child { margin-bottom: 0; }
+  figure {
+    margin: 28px 0;
+    padding: 20px;
+    background: white;
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+  }
+  figure svg { display: block; width: 100%; height: auto; }
+  figcaption {
+    font-family: var(--sans);
+    font-size: 13px;
+    color: var(--ink-faint);
+    text-align: center;
+    margin-top: 10px;
+    font-style: italic;
+  }
+  .tldr {
+    background: var(--accent-soft);
+    border: 1px solid #f0c8b4;
+    border-radius: 8px;
+    padding: 22px 26px;
+    margin: 32px 0;
+  }
+  .tldr h3 {
+    margin: 0 0 10px 0;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    font-family: var(--sans);
+  }
+  .tldr ol {
+    font-size: 15.5px;
+    line-height: 1.55;
+    margin: 0;
+  }
+  footer.doc-foot {
+    margin-top: 80px;
+    padding-top: 28px;
+    border-top: 1px solid var(--rule);
+    color: var(--ink-faint);
+    font-size: 14px;
+    font-family: var(--sans);
+    font-style: italic;
+  }
+  /* Comparison table */
+  .compare-tbl {
+    font-family: var(--sans);
+    font-size: 13.5px;
+    margin: 20px 0 12px 0;
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .compare-tbl thead th {
+    background: var(--code-bg);
+    font-weight: 600;
+    text-align: center;
+    padding: 10px 12px;
+    border-bottom: 2px solid var(--rule);
+  }
+  .compare-tbl thead th:first-child { text-align: left; width: 44%; }
+  .compare-tbl tbody td {
+    text-align: center;
+    vertical-align: middle;
+    padding: 10px 8px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .compare-tbl tbody tr:last-child td { border-bottom: none; }
+  .compare-tbl tbody tr:nth-child(even) td { background: #fdfcf9; }
+  .compare-tbl td:first-child {
+    text-align: left;
+    font-weight: 500;
+    padding-left: 14px;
+  }
+  .compare-tbl .yes { color: #4a7a4a; font-weight: 700; font-size: 19px; line-height: 1; }
+  .compare-tbl .no  { color: #c8c4bb; font-size: 17px; line-height: 1; }
+  .compare-tbl .partial { color: #c8542b; font-weight: 700; font-size: 17px; line-height: 1; }
+  .compare-tbl .note {
+    display: block;
+    font-size: 10.5px;
+    color: var(--ink-faint);
+    font-weight: 400;
+    font-style: italic;
+    margin-top: 3px;
+    line-height: 1.3;
+  }
+  .legend {
+    font-family: var(--sans);
+    font-size: 12px;
+    color: var(--ink-faint);
+    margin: 0 0 28px 0;
+  }
+  .legend .yes { color: #4a7a4a; font-weight: 700; }
+  .legend .no  { color: #c8c4bb; }
+  .legend .partial { color: #c8542b; font-weight: 700; }
+  /* Diagram-specific styling */
+  .dgm-text { font-family: var(--sans); fill: var(--ink); font-size: 12px; }
+  .dgm-text-small { font-family: var(--sans); fill: var(--ink-soft); font-size: 10px; }
+  .dgm-label { font-family: var(--sans); fill: var(--ink); font-size: 11px; font-weight: 600; }
+  .dgm-box { fill: white; stroke: #333; stroke-width: 1.2; }
+  .dgm-box-accent { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 1.2; }
+  .dgm-box-muted { fill: var(--code-bg); stroke: #999; stroke-width: 1; }
+  .dgm-arrow { fill: none; stroke: #333; stroke-width: 1.5; marker-end: url(#arrowhead); }
+  .dgm-arrow-dashed { fill: none; stroke: #666; stroke-width: 1.2; stroke-dasharray: 4 3; marker-end: url(#arrowhead); }
+  /* Print styles */
+  @media print {
+    body { background: white; font-size: 11pt; }
+    .layout { grid-template-columns: 1fr; }
+    nav.toc { display: none; }
+    main { max-width: 100%; padding: 0.5in; }
+    h2 { page-break-before: always; }
+    h2:first-of-type, header.doc-head + h2 { page-break-before: avoid; }
+    h3, h4 { page-break-after: avoid; }
+    figure, pre, table, .callout { page-break-inside: avoid; }
+    a { color: var(--ink); text-decoration: none; }
+  }
+  /* Mobile */
+  @media (max-width: 900px) {
+    .layout { grid-template-columns: 1fr; }
+    nav.toc {
+      position: static;
+      height: auto;
+      border-right: none;
+      border-bottom: 1px solid var(--rule);
+      max-height: 300px;
+    }
+    main { padding: 32px 24px 80px; }
+    header.doc-head h1 { font-size: 30px; }
+    h2 { font-size: 24px; }
+  }
+</style>
+</head>
+<body>
+<div class="layout">
+
+<nav class="toc" aria-label="Table of contents">
+  <h3>Contents</h3>
+  <ol>
+    <li><a href="#tldr">TL;DR</a></li>
+    <li><a href="#read">How to read</a></li>
+    <li><a href="#whats-new">What's new</a></li>
+    <li><a href="#p0">Part 0. Foundations</a></li>
+    <li><a href="#p1">Part 1. Orientation</a></li>
+    <li><a href="#p2">Part 2. Anatomy of a project</a></li>
+    <li><a href="#p3">Part 3. Project templates</a></li>
+    <li><a href="#p4">Part 4. Modes</a></li>
+    <li><a href="#p5">Part 5. Plugins & connectors</a></li>
+    <li><a href="#p6">Part 6. Hooks</a></li>
+    <li><a href="#p7">Part 7. Agent SDK</a></li>
+    <li><a href="#p8">Part 8. Tokens & context</a></li>
+    <li><a href="#p9">Part 9. Prompts vs setup</a></li>
+    <li><a href="#p10">Part 10. Cowork mental model</a></li>
+    <li><a href="#p11">Part 11. Cheat sheets</a></li>
+  </ol>
+</nav>
+
+<main>
+<header class="doc-head">
+  <h1>The Unofficial Field Guide to Claude Code and Cowork</h1>
+  <p class="sub">A mental model for people who are already using these tools and want the pieces to click.</p>
+  <p class="author-line">By <strong>Michael Nissan</strong></p>
+  <div class="badges">
+    <span class="badge"><span class="dot"></span>Last updated: April 22, 2026</span>
+    <span class="badge accent"><span class="dot"></span>Unofficial, not Anthropic documentation</span>
+    <span class="badge"><span class="dot"></span>~45 pages equivalent</span>
+  </div>
+  <div class="author-note">
+    <p><strong>A personal note from the author.</strong> After using Claude Code for the last three months, I had a lot of questions about certain features and how they work, what does this thing actually do, when do I reach for it, how does it fit with everything else? I put this together to answer those questions for myself. If you're using Claude Code (or Cowork) for your own projects, maybe it'll help you too.</p>
+    <p>There's a lot of great official documentation on Anthropic's site, and you should read it. I built this in addition to that, not instead of it. I'm a visual learner. I need charts, diagrams, and side-by-side comparisons to make these concepts stick. If that's you too, this guide is for you.</p>
+  </div>
+</header>
+
+<div class="tldr" id="tldr">
+  <h3>TL;DR</h3>
+  <ol>
+    <li><strong>Claude Code and Cowork share one brain</strong>, an LLM in a loop with tools. They differ in <em>surface</em>: Claude Code is for code in a terminal or IDE; Cowork is a desktop app for anyone with files and tasks.</li>
+    <li><strong>Four things shape what Claude does for you</strong>, in order of leverage: the model, the context window, your project setup (<code>CLAUDE.md</code>, skills, MCPs), and your prompt. Most people obsess over the prompt. The leverage is further up the stack.</li>
+    <li><strong>A skill gives Claude judgment; an MCP gives Claude capability.</strong> You often want both. MCP schemas load at session start, connecting a chatty MCP costs tokens before you type a word.</li>
+    <li><strong>Plan mode is <em>read-only</em>, not "no tools."</strong> It can run shell commands to explore, just can't mutate. Common misconception.</li>
+    <li><strong>"Agent" means four different things</strong> in this ecosystem. Conflating them causes most of the confusion.</li>
+    <li><strong>The terminal is still the most feature-complete Claude Code surface</strong>, though the VS Code extension and desktop app are catching up. Verify for your version.</li>
+    <li><strong>Investing in <code>CLAUDE.md</code> + a few good skills beats writing longer prompts, every time.</strong> Prompts are turn-by-turn; setup is every turn forever.</li>
+  </ol>
+</div>
+
+<section id="read">
+<h3 style="border-top:none;padding-top:0;margin-top:40px;">How to read this guide</h3>
+<p>Every concept gets the same treatment: plain-English explanation → one concrete example → a best-practice callout. Recurring <strong>Common confusions</strong> boxes flag the misconceptions I've tripped on.</p>
+<p>Skip around. The parts are mostly independent. If you've never thought hard about what a token <em>is</em>, start at Part 0. If you already have the foundations, jump to Part 2.</p>
+</section>
+
+<section id="whats-new" class="whats-new-block">
+<h3 class="wn-head">What's new</h3>
+<p class="wn-sub">A daily-ish log of Claude Code, Cowork, and Anthropic changes that affect this guide. Auto-populated by a watcher that scans Anthropic's news, docs, release notes, and engineering blog every morning. One bullet per change, newest day first. Days with no relevant updates are skipped.</p>
+<div class="whats-new-entries">
+<!-- WHATS-NEW-START, the watcher inserts new <div class="wn-day">…</div> blocks immediately after this marker, newest first. Do not remove or rename this comment. -->
+<div class="wn-day">
+  <p class="wn-date">2026-05-03</p>
+  <ul>
+    <li class="wn-breaking"><strong>[BREAKING]</strong> Claude Opus 4.7 now auto-blocks requests it reads as prohibited or high-risk cybersecurity uses, and users doing legitimate security work (pen testing, vulnerability research, red-teaming) can apply to Anthropic's new Cyber Verification Program for reduced restrictions, shipped alongside Project Glasswing. <span class="wn-meta">affects <a href="#p4">Part 4</a> · <a href="https://www.anthropic.com/news/claude-opus-4-7">source</a></span></li>
+  </ul>
+</div>
+<div class="wn-day">
+  <p class="wn-date">2026-05-01</p>
+  <ul>
+    <li class="wn-breaking"><strong>[BREAKING]</strong> Claude Code v2.1.126 expands <code>--dangerously-skip-permissions</code> to also bypass prompts for writes to <code>.claude/</code>, <code>.git/</code>, <code>.vscode/</code>, and shell config files (catastrophic removals still prompt), shrinking the safety net the flag used to leave intact. <span class="wn-meta">affects <a href="#p4">Part 4</a> · <a href="https://docs.claude.com/en/release-notes/claude-code">source</a></span></li>
+    <li>Anthropic's engineering team detailed Managed Agents, a hosted service for long-horizon agent work that decouples the harness from the sandbox so each can fail or be replaced independently. <span class="wn-meta">affects <a href="#p7">Part 7</a> · <a href="https://www.anthropic.com/engineering/managed-agents">source</a></span></li>
+    <li>Claude Code added <code>/ultrareview</code>, a cloud-based code review command that runs parallel multi-agent analysis on your branch (or a named GitHub PR), plus a <code>claude ultrareview</code> subcommand for non-interactive runs from CI. <span class="wn-meta">affects <a href="#p11">Part 11</a> · <a href="https://docs.claude.com/en/release-notes/claude-code">source</a></span></li>
+    <li>Claude Code v2.1.126 added <code>claude project purge [path]</code>, a new CLI subcommand that deletes all stored state for a project (transcripts, tasks, file history, config) with <code>--dry-run</code> and <code>-i</code> for safe inspection. <span class="wn-meta">affects <a href="#p11">Part 11</a> · <a href="https://docs.claude.com/en/release-notes/claude-code">source</a></span></li>
+  </ul>
+</div>
+<div class="wn-day">
+  <p class="wn-date">2026-04-29</p>
+  <ul>
+    <li>New connectors for creative tools (Blender, Autodesk Fusion, Adobe, Ableton, Splice, SketchUp, Affinity by Canva, Resolume) broaden the connector catalog beyond the Gmail/Drive/Linear/Slack productivity stack. <span class="wn-meta">affects <a href="#p5">Part 5</a> · <a href="https://www.anthropic.com/news/claude-for-creative-work">source</a></span></li>
+  </ul>
+</div>
+<div class="wn-day">
+  <p class="wn-date">2026-04-27</p>
+  <ul>
+    <li>Cowork went generally available on macOS and Windows on April 9, with the Analytics API, OpenTelemetry support, and role-based access controls for Enterprise. <span class="wn-meta">affects <a href="#p10">Part 10</a> · <a href="https://support.claude.com/en/articles/12138966-release-notes">source</a></span></li>
+    <li>Computer use (research preview) has been live in Cowork and Claude Code since March 23 for Pro and Max, letting Claude open files, click, and navigate GUIs on your actual desktop. <span class="wn-meta">affects <a href="#p10">Part 10</a> · <a href="https://support.claude.com/en/articles/12138966-release-notes">source</a></span></li>
+  </ul>
+</div>
+<div class="wn-day">
+  <p class="wn-date">2026-04-26</p>
+  <ul>
+    <li>Claude Design launched as a third Anthropic surface (alongside Claude Code and Cowork) for designs, prototypes, and decks, with a one-click handoff bundle that packages components, tokens, and interaction notes for Claude Code. <span class="wn-meta">affects <a href="#p1">Part 1</a> · <a href="https://www.anthropic.com/news/claude-design-anthropic-labs">source</a></span></li>
+    <li>Claude Code now defaults to xhigh effort on Opus 4.7 and high on other models after Anthropic reverted a March default-to-medium change, and an April 23 postmortem confirms two unrelated bugs (cleared thinking, verbosity prompt) hurt quality through early April before v2.1.116 fixed them. <span class="wn-meta">affects <a href="#p4">Part 4</a> · <a href="https://www.anthropic.com/engineering/april-23-postmortem">source</a></span></li>
+  </ul>
+</div>
+<div class="wn-day">
+  <p class="wn-date">2026-04-25</p>
+  <ul>
+    <li>Opus 4.7 is now Anthropic's flagship coding and vision model, replacing Opus 4.6 as the default for Enterprise and API customers. <span class="wn-meta">affects <a href="#p1">Part 1</a> · <a href="https://www.anthropic.com/news/claude-opus-4-7">source</a></span></li>
+    <li>Claude Code added checkpoints and a <code>/rewind</code> command that snapshot your working tree before each change so you can roll back from a bad autonomous run. <span class="wn-meta">affects <a href="#p4">Part 4</a> · <a href="https://www.anthropic.com/news/enabling-claude-code-to-work-more-autonomously">source</a></span></li>
+    <li>A native VS Code extension (beta) brings inline diffs, plan editing, auto-accept, and multi-conversation tabs to Claude Code. <span class="wn-meta">affects <a href="#p1">Part 1</a> · <a href="https://www.anthropic.com/news/enabling-claude-code-to-work-more-autonomously">source</a></span></li>
+    <li>Xcode 26.3 ships a native Claude Agent SDK integration and exposes Xcode capabilities (including Previews capture) over MCP. <span class="wn-meta">affects <a href="#p7">Part 7</a> · <a href="https://www.anthropic.com/news/apple-xcode-claude-agent-sdk">source</a></span></li>
+  </ul>
+</div>
+<div class="wn-day">
+  <p class="wn-date">2026-04-24</p>
+  <ul>
+    <li>Guide first published. <span class="wn-meta">Watcher scheduled for 9 AM daily, entries will start appearing here from tomorrow.</span></li>
+  </ul>
+</div>
+<!-- WHATS-NEW-END, do not remove or rename this comment. -->
+</div>
+</section>
+
+<!-- PART 0 -->
+<h2 id="p0"><span class="part-num">Part 0</span>Foundations</h2>
+<p>If you've been using Claude Code for months but nobody ever sat you down and explained what an LLM actually is, this part is for you. It's short. It unlocks the rest.</p>
+
+<h3>What an LLM actually is</h3>
+<p>A Large Language Model is a pattern-matcher on text. You feed it a sequence of text; it predicts what text would most plausibly come next.</p>
+<p>It is <strong>not a database</strong> (it doesn't "look things up"). It is <strong>not a brain</strong> (no memory between conversations unless you give it one). It is <strong>not a search engine</strong> (though it can be wired to one). It's more like an extremely well-read improv partner: you set the scene, it continues the scene, one word at a time.</p>
+<p>Everything else, agents, tools, skills, MCPs, is scaffolding around that core trick.</p>
+<div class="callout tip"><strong>Why this matters</strong><p>When Claude gets something wrong, the question isn't "why is it broken?" It's "what pattern did I give it that led to this continuation?" That reframe changes how you debug.</p></div>
+
+<h3>What a token is</h3>
+<p>Tokens are the units the model actually reads and writes. Not characters, not words, somewhere in between. Roughly:</p>
+<ul>
+  <li><code>"hello"</code> → 1 token</li>
+  <li><code>"unbelievable"</code> → 3 tokens (<code>un</code>, <code>believ</code>, <code>able</code>)</li>
+  <li><code>"🦙"</code> → several tokens (emoji are expensive)</li>
+  <li>Typical English prose → ~0.75 tokens per word, or ~4 characters per token</li>
+</ul>
+<p>You pay for tokens in two places: <strong>input</strong> (what you send the model) and <strong>output</strong> (what it generates). Input is cheaper per token but there's way more of it, so it dominates cost on long sessions.</p>
+<div class="callout confuse"><strong>Common confusion</strong><p>People think "short prompts are cheap." They are, but the prompt is a tiny fraction of what's actually in context. Every file Claude read, every tool result, every skill description loaded at session start is also input tokens. The prompt is the tip of the iceberg.</p></div>
+
+<h3>What a context window is</h3>
+<p>The context window is everything the model can see at once when deciding what to say next. It's finite. Claude models currently offer up to a 1M-token context window in Claude Code, which is huge, but not infinite, and not free.</p>
+<p>Think of it as RAM, not a hard drive. Anything not in the context window might as well not exist, as far as this particular response is concerned. And once something enters the window, it stays there until you explicitly clear it or it gets compacted away.</p>
+<div class="callout confuse"><strong>Why "models forget"</strong><p>They don't, really. Either (a) the info was never in the window, (b) it was evicted by compaction, or (c) it's still there but buried so deep the model's attention dilutes across it. All three feel like "forgetting" from the outside.</p></div>
+
+<h3>What an agent is</h3>
+<p>An agent is an LLM in a loop that can <strong>take actions in the world</strong> via tools.</p>
+
+<figure>
+<svg viewBox="0 0 700 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Agent loop diagram">
+  <defs>
+    <marker id="arrowhead" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#333"/>
+    </marker>
+  </defs>
+  <circle cx="350" cy="130" r="110" class="dgm-box-muted" fill="none" stroke="#bbb" stroke-dasharray="5 4"/>
+  <rect x="300" y="20" width="100" height="42" rx="6" class="dgm-box"/>
+  <text x="350" y="37" text-anchor="middle" class="dgm-label">1. Read</text>
+  <text x="350" y="52" text-anchor="middle" class="dgm-text-small">prompt + context</text>
+  <rect x="480" y="110" width="100" height="42" rx="6" class="dgm-box"/>
+  <text x="530" y="127" text-anchor="middle" class="dgm-label">2. Think</text>
+  <text x="530" y="142" text-anchor="middle" class="dgm-text-small">reason; plan</text>
+  <rect x="300" y="200" width="100" height="42" rx="6" class="dgm-box-accent"/>
+  <text x="350" y="217" text-anchor="middle" class="dgm-label">3. Tool call</text>
+  <text x="350" y="232" text-anchor="middle" class="dgm-text-small">Read / Edit / Bash / MCP</text>
+  <rect x="120" y="110" width="100" height="42" rx="6" class="dgm-box"/>
+  <text x="170" y="127" text-anchor="middle" class="dgm-label">4. Result</text>
+  <text x="170" y="142" text-anchor="middle" class="dgm-text-small">back into context</text>
+  <path d="M 400 42 Q 470 60 500 108" class="dgm-arrow"/>
+  <path d="M 530 154 Q 510 195 400 220" class="dgm-arrow"/>
+  <path d="M 300 220 Q 200 210 180 154" class="dgm-arrow"/>
+  <path d="M 180 108 Q 195 55 300 42" class="dgm-arrow"/>
+  <rect x="600" y="110" width="90" height="42" rx="6" class="dgm-box" stroke-dasharray="3 3"/>
+  <text x="645" y="127" text-anchor="middle" class="dgm-label">5. Done</text>
+  <text x="645" y="142" text-anchor="middle" class="dgm-text-small">final answer</text>
+  <path d="M 580 131 L 597 131" class="dgm-arrow-dashed"/>
+</svg>
+<figcaption>The agent loop. Steps 1-4 repeat until the model decides it's done.</figcaption>
+</figure>
+
+<p>That's it. That's the whole thing. Claude Code, Cowork, Cursor's agent mode, Windsurf's Cascade, Antigravity, the SDK, they're all variations on this loop. What differs is which tools are available, how results come back, and what wraps around it.</p>
+<div class="callout tip"><strong>Best practice</strong><p>The unit of an agent is not "the response." It's a whole loop of thinking and acting until it decides it's done. That's why you sometimes see Claude make 15 tool calls for one of your messages. One turn, many actions.</p></div>
+
+<h3>Why prompts matter; why context matters more</h3>
+<p>A great prompt on a blank context is a smart stranger with no files. A mediocre prompt on well-curated context, your <code>CLAUDE.md</code>, the right skills loaded, your codebase already referenced, is a seasoned teammate who just needs a nudge.</p>
+<p>Invest in the context. Prompts are disposable. Context setup compounds.</p>
+
+<h3>All the pieces in motion: one paragraph</h3>
+<p>You open Claude Code in your project. It reads your <code>CLAUDE.md</code> (context). You type "fix the failing auth test" (prompt). The model, seeing <code>CLAUDE.md</code> says <code>pnpm test</code> runs tests, decides to call the Bash tool (agent loop, tool call). The test output returns as a tool result (into context). The model reads the stack trace, opens the relevant file with Read (another tool call), sees the bug, calls Edit to patch it, calls Bash again to re-run the test, sees it pass, and answers: "Fixed. The test was asserting on the old error message, updated it." That whole sequence was <strong>one turn</strong>. It used maybe 12,000 tokens. You typed 6 words. That's the game.</p>
+
+<!-- PART 1 -->
+<h2 id="p1"><span class="part-num">Part 1</span>Orientation: what am I actually using?</h2>
+
+<h3>Claude Code vs Claude Cowork</h3>
+<p>Both are the same agent loop. They differ in surface, audience, and defaults.</p>
+
+<figure>
+<svg viewBox="0 0 700 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Surface map">
+  <rect x="40" y="230" width="620" height="50" rx="8" class="dgm-box-accent"/>
+  <text x="350" y="250" text-anchor="middle" class="dgm-label">Shared engine: model + agent loop + tools + MCP + skills</text>
+  <text x="350" y="267" text-anchor="middle" class="dgm-text-small">Same brain. Different wrappers.</text>
+  <rect x="40" y="40" width="300" height="170" rx="8" class="dgm-box"/>
+  <text x="190" y="66" text-anchor="middle" class="dgm-label" style="font-size:14px;">Claude Code</text>
+  <text x="190" y="84" text-anchor="middle" class="dgm-text-small">For developers</text>
+  <line x1="60" y1="96" x2="320" y2="96" stroke="#ddd"/>
+  <text x="60" y="118" class="dgm-text">• Terminal (most feature-complete)</text>
+  <text x="60" y="138" class="dgm-text">• VS Code / JetBrains extension</text>
+  <text x="60" y="158" class="dgm-text">• Web / mobile monitoring views</text>
+  <text x="60" y="178" class="dgm-text">• Deep file + shell + git access</text>
+  <text x="60" y="198" class="dgm-text">• CLAUDE.md, .claude/ in the repo</text>
+  <rect x="360" y="40" width="300" height="170" rx="8" class="dgm-box"/>
+  <text x="510" y="66" text-anchor="middle" class="dgm-label" style="font-size:14px;">Cowork</text>
+  <text x="510" y="84" text-anchor="middle" class="dgm-text-small">For anyone with files + tasks</text>
+  <line x1="380" y1="96" x2="640" y2="96" stroke="#ddd"/>
+  <text x="380" y="118" class="dgm-text">• Desktop app + mobile</text>
+  <text x="380" y="138" class="dgm-text">• Connectors to Gmail, Drive, Linear…</text>
+  <text x="380" y="158" class="dgm-text">• Workspace folder on your computer</text>
+  <text x="380" y="178" class="dgm-text">• Artifacts (live HTML views)</text>
+  <text x="380" y="198" class="dgm-text">• Scheduled tasks</text>
+</svg>
+<figcaption>Claude Code vs Cowork, two surfaces over one shared engine.</figcaption>
+</figure>
+
+<p><strong>Claude Code</strong> is a developer tool. Primarily a CLI in your terminal, inside your project folder. Deep file-system access, shell, git integration. What you use to build software.</p>
+<p><strong>Cowork</strong> is a desktop app for anyone who works with files and tasks, not just developers. Workspace folder, connectors to Gmail / Calendar / Drive / Linear / Slack, scheduled tasks, artifacts (interactive HTML views that persist between sessions). Point a PM, designer, marketer, or ops person at Cowork.</p>
+<p>Under the hood: same loop, same models, mostly same tools. Different wrappers.</p>
+
+<h4>Feature-by-feature: what each one can actually do</h4>
+<p>The two products overlap heavily on the engine and diverge sharply on the wrapper. Here's the same feature list, side-by-side:</p>
+<table class="compare-tbl">
+<thead><tr><th>Feature</th><th>Claude Code</th><th>Cowork</th></tr></thead>
+<tbody>
+<tr><td>Reads/edits files in a folder you control</td><td><span class="yes">✓</span></td><td><span class="yes">✓</span></td></tr>
+<tr><td>Runs shell commands</td><td><span class="yes">✓</span><span class="note">your real shell, full access</span></td><td><span class="partial">◐</span><span class="note">sandboxed Linux shell</span></td></tr>
+<tr><td>Git integration (diffs, commits, PRs)</td><td><span class="yes">✓</span></td><td><span class="no">-</span></td></tr>
+<tr><td>Lives inside an IDE / terminal</td><td><span class="yes">✓</span></td><td><span class="no">-</span></td></tr>
+<tr><td>Standalone desktop app</td><td><span class="partial">◐</span><span class="note">monitoring view</span></td><td><span class="yes">✓</span><span class="note">primary surface</span></td></tr>
+<tr><td>Mobile app</td><td><span class="partial">◐</span><span class="note">monitor + notify</span></td><td><span class="yes">✓</span><span class="note">first-class</span></td></tr>
+<tr><td>One-click connectors (Gmail, Drive, Linear, Slack…)</td><td><span class="partial">◐</span><span class="note">growing support</span></td><td><span class="yes">✓</span><span class="note">native UX</span></td></tr>
+<tr><td>Custom MCP servers (`.mcp.json`)</td><td><span class="yes">✓</span></td><td><span class="yes">✓</span></td></tr>
+<tr><td>Skills (instructions + scripts)</td><td><span class="yes">✓</span></td><td><span class="yes">✓</span></td></tr>
+<tr><td>Plugins (skills + MCPs + hooks bundles)</td><td><span class="yes">✓</span></td><td><span class="yes">✓</span></td></tr>
+<tr><td>Hooks (lifecycle automation)</td><td><span class="yes">✓</span></td><td><span class="partial">◐</span><span class="note">limited surface</span></td></tr>
+<tr><td>Sub-agents (named, in `.claude/agents/`)</td><td><span class="yes">✓</span></td><td><span class="yes">✓</span></td></tr>
+<tr><td>Slash commands</td><td><span class="yes">✓</span></td><td><span class="yes">✓</span></td></tr>
+<tr><td>Modes (Plan / Accept Edits / Auto / Bypass)</td><td><span class="yes">✓</span></td><td><span class="partial">◐</span><span class="note">simpler permission model</span></td></tr>
+<tr><td>Scheduled tasks (run on a cron)</td><td><span class="partial">◐</span><span class="note">via SDK or external cron</span></td><td><span class="yes">✓</span><span class="note">built-in</span></td></tr>
+<tr><td>Artifacts (live HTML views that persist)</td><td><span class="no">-</span></td><td><span class="yes">✓</span></td></tr>
+<tr><td>Workspace folder concept (you pick a folder to share)</td><td><span class="no">-</span><span class="note">you're already in a repo</span></td><td><span class="yes">✓</span></td></tr>
+<tr><td>Designed for non-developers</td><td><span class="no">-</span></td><td><span class="yes">✓</span></td></tr>
+<tr><td>Best for shipping production code</td><td><span class="yes">✓</span></td><td><span class="no">-</span></td></tr>
+</tbody>
+</table>
+<p class="legend"><span class="yes">✓</span> does this · <span class="partial">◐</span> partial / conditional · <span class="no">-</span> doesn't do this</p>
+<div class="callout tip"><strong>The real signal in this chart</strong><p>The engine row (files, MCPs, skills, plugins, sub-agents, slash commands) is mostly green for both. The wrapper row (git, IDE, scheduled tasks, artifacts, connectors) is where they split. Pick by surface, not by capability.</p></div>
+
+<h3>Desktop app vs IDE vs terminal</h3>
+<p>For <strong>Claude Code</strong> specifically:</p>
+<ul>
+  <li><strong>Terminal.</strong> The original surface. Historically the most feature-complete: newest features tend to land here first. Fullscreen rendering, remote control, every hook event, every mode. Power-users live here.</li>
+  <li><strong>VS Code extension</strong> (and similar for JetBrains). Great if you want Claude Code embedded in your existing editor. A hair behind the terminal on cutting-edge features.</li>
+  <li><strong>Web / mobile / desktop views.</strong> Mostly for monitoring long-running sessions, triggering remote tasks, push notifications. Not where you'd do deep coding.</li>
+</ul>
+
+<h4>Side-by-side: which surface does what</h4>
+<table class="compare-tbl">
+<thead><tr><th>Feature</th><th>Terminal</th><th>IDE (extension)</th><th>Desktop / web app</th></tr></thead>
+<tbody>
+<tr><td>Full Claude Code feature set, day one</td><td><span class="yes">✓</span></td><td><span class="partial">◐</span><span class="note">slight lag</span></td><td><span class="partial">◐</span><span class="note">monitoring-first</span></td></tr>
+<tr><td>Inline diffs against your open editor</td><td><span class="no">-</span></td><td><span class="yes">✓</span></td><td><span class="no">-</span></td></tr>
+<tr><td>Sees your currently-open files</td><td><span class="no">-</span></td><td><span class="yes">✓</span></td><td><span class="no">-</span></td></tr>
+<tr><td>Every hook event and matcher</td><td><span class="yes">✓</span></td><td><span class="yes">✓</span></td><td><span class="partial">◐</span></td></tr>
+<tr><td>All four modes (Plan / Accept / Auto / Bypass)</td><td><span class="yes">✓</span></td><td><span class="yes">✓</span></td><td><span class="partial">◐</span></td></tr>
+<tr><td>Remote / background sessions</td><td><span class="yes">✓</span></td><td><span class="yes">✓</span></td><td><span class="yes">✓</span><span class="note">primary use</span></td></tr>
+<tr><td>Mobile push when a task needs you</td><td><span class="no">-</span></td><td><span class="no">-</span></td><td><span class="yes">✓</span></td></tr>
+<tr><td>Approve / deny tool calls one-by-one</td><td><span class="yes">✓</span></td><td><span class="yes">✓</span></td><td><span class="yes">✓</span></td></tr>
+<tr><td>Fastest keyboard-driven workflow</td><td><span class="yes">✓</span></td><td><span class="partial">◐</span></td><td><span class="no">-</span></td></tr>
+<tr><td>No context-switch out of your editor</td><td><span class="no">-</span></td><td><span class="yes">✓</span></td><td><span class="no">-</span></td></tr>
+<tr><td>Works with no terminal experience</td><td><span class="no">-</span></td><td><span class="partial">◐</span></td><td><span class="yes">✓</span></td></tr>
+<tr><td>Best for power users / heavy day-to-day</td><td><span class="yes">✓</span></td><td><span class="yes">✓</span></td><td><span class="no">-</span></td></tr>
+</tbody>
+</table>
+<p class="legend"><span class="yes">✓</span> does this · <span class="partial">◐</span> partial / conditional · <span class="no">-</span> doesn't do this</p>
+
+<div class="callout warn"><strong>Important caveat about "the IDE"</strong><p>When you're using an IDE, there are <em>two</em> ways to run Claude Code in there, and people conflate them:</p><ol><li><strong>The Claude Code extension</strong>, installed from the marketplace, lives in a side panel, sees your open files, shows inline diffs.</li><li><strong>Claude Code in the IDE's integrated terminal</strong>, same <code>claude</code> binary you'd run anywhere else, just inside your editor's terminal pane. Identical to running it in your OS terminal.</li></ol><p>You can also run the standalone OS terminal next to your IDE, that's effectively the same as #2. So when you hear "I use Claude Code in VS Code," ask which one. They behave differently and have different feature parity.</p></div>
+
+<div class="callout warn"><strong>Verify for your version</strong><p>This landscape shifts every month or two. The "terminal is most feature-complete" framing has been directionally true for a while, but specific features land on specific surfaces in different orders. Always check the current release notes.</p></div>
+
+<h3>IDE primer (for non-developers, and developers who've only used one)</h3>
+<p>An <strong>IDE</strong> (Integrated Development Environment) is a text editor with superpowers for writing code: syntax highlighting, autocomplete, inline errors, debugging, file navigation, git integration. VS Code is the dominant one. Cursor, Windsurf, and Google's Antigravity are AI-first IDEs, all are VS Code forks (or close cousins) with AI pushed to the center of the UX.</p>
+<p>Honest differences as of April 2026:</p>
+<table>
+<thead><tr><th>Tool</th><th>Position</th><th>Strength</th></tr></thead>
+<tbody>
+<tr><td><strong>VS Code + Claude Code ext</strong></td><td>Familiar VS Code with Claude Code in a panel</td><td>Biggest extension ecosystem, lowest switching friction</td></tr>
+<tr><td><strong>Cursor</strong></td><td>VS Code fork, AI baked in (Cmd+K, Composer agent)</td><td>Large community, multi-provider support</td></tr>
+<tr><td><strong>Windsurf</strong></td><td>Agentic-first IDE with Cascade</td><td>Budget-friendly; strong on autonomous multi-file changes</td></tr>
+<tr><td><strong>Antigravity (Google)</strong></td><td>Multi-agent orchestration + built-in browser</td><td>Generous free preview; newest entrant</td></tr>
+</tbody>
+</table>
+<div class="callout tip"><strong>Framework for choosing</strong><p>If you're picking for personal use and already use Claude heavily: VS Code + Claude Code extension is the lowest-friction choice. If you're joining a company, you'll likely inherit whatever they use, don't fight it. The differences between these tools are smaller than the differences between "well-set-up project" and "not-set-up project."</p></div>
+
+<h3>Mobile</h3>
+<p><strong>Cowork</strong> has a proper mobile experience. <strong>Claude Code</strong> on mobile is about monitoring and light interaction with remote sessions, not full terminal work. Mobile push notifications on Claude Code landed in early 2026, you'll get pinged when a long task needs input or finishes.</p>
+
+<h3>Personal use vs company use</h3>
+<p>The big difference: at a company, your <code>CLAUDE.md</code>, skills, and <code>.mcp.json</code> are shared with teammates via git. Your working patterns become part of the repo. For personal projects, you can be messier, but investing in the setup still pays off, because future-you is also a teammate.</p>
+
+<h3>Cowork use cases: pick the right surface for the task</h3>
+<p>Once you've connected accounts and installed plugins, Cowork is happy to do most knowledge-work jobs. The question is <em>which surface of Cowork</em> (and whether to involve Claude Code at all). Here's the rough split I keep coming back to:</p>
+<table class="compare-tbl">
+<thead><tr><th>Task</th><th>Best surface</th><th>Why</th></tr></thead>
+<tbody>
+<tr><td>Brainstorm a project / feature / pitch</td><td>Cowork mobile</td><td>Couch-friendly. Voice input. No keyboard friction.</td></tr>
+<tr><td>Triage email and Slack at the start of the day</td><td>Cowork desktop</td><td>Connectors do the heavy lifting; multi-window helps.</td></tr>
+<tr><td>Draft a doc, deck, or spreadsheet from scratch</td><td>Cowork desktop</td><td>Skills (<code>docx</code>, <code>pptx</code>, <code>xlsx</code>) + workspace folder = real files out.</td></tr>
+<tr><td>Design an interactive dashboard or tracker</td><td>Cowork desktop</td><td>Artifacts (live HTML) live here, not in Claude Code.</td></tr>
+<tr><td>Quick "what's on my plate" check between meetings</td><td>Cowork mobile</td><td>Daily-briefing skill + push notifications.</td></tr>
+<tr><td>Schedule something to run every morning</td><td>Cowork desktop</td><td>Scheduled tasks are a Cowork primitive.</td></tr>
+<tr><td>Write or refactor code</td><td>Claude Code (IDE or terminal)</td><td>Real shell, git, IDE diffs, hooks, the whole stack.</td></tr>
+<tr><td>Run a long, autonomous coding job in the background</td><td>Claude Code (terminal) + Cowork mobile to monitor</td><td>Power on the desk; notifications in your pocket.</td></tr>
+<tr><td>Build / test / debug an MCP or plugin</td><td>Claude Code (terminal)</td><td>Closer to the metal; fastest iteration.</td></tr>
+<tr><td>Customer-facing artifact a non-dev needs to update</td><td>Cowork desktop</td><td>Workspace folder lives on their computer; they own it.</td></tr>
+</tbody>
+</table>
+<div class="callout tip"><strong>Mobile rule of thumb</strong><p>Use mobile Cowork for <em>thinking, monitoring, and capturing</em>. Use desktop Cowork or Claude Code for <em>making</em>. Mobile is great for "what should I cover in my 1:1?" or "summarize what landed in my inbox." It's not great for "make me a 30-slide pitch deck."</p></div>
+
+<h3>Using Claude Code <em>and</em> Cowork together, a combined workflow</h3>
+<p>You don't have to pick one. The most natural pattern I've found: <strong>Cowork to think and design, Claude Code to build</strong>. Here's a worked example, building a simple internal tool from scratch.</p>
+
+<figure>
+<svg viewBox="0 0 700 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Combined Cowork + Claude Code workflow">
+  <defs>
+    <marker id="arrowhead-cw" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#333"/>
+    </marker>
+  </defs>
+  <rect x="20" y="40" width="320" height="240" rx="10" fill="#f7f3ec" stroke="#c8542b" stroke-width="1.2"/>
+  <text x="180" y="64" text-anchor="middle" class="dgm-label" style="font-size:14px;fill:#c8542b;">Cowork</text>
+  <text x="180" y="80" text-anchor="middle" class="dgm-text-small">think + design + spec</text>
+  <rect x="40" y="100" width="280" height="40" rx="5" class="dgm-box"/>
+  <text x="180" y="118" text-anchor="middle" class="dgm-label">1. Brainstorm in mobile Cowork</text>
+  <text x="180" y="132" text-anchor="middle" class="dgm-text-small">"what should this tool actually do?"</text>
+  <rect x="40" y="155" width="280" height="40" rx="5" class="dgm-box"/>
+  <text x="180" y="173" text-anchor="middle" class="dgm-label">2. Spec it in desktop Cowork</text>
+  <text x="180" y="187" text-anchor="middle" class="dgm-text-small">draft .md spec → save to workspace folder</text>
+  <rect x="40" y="210" width="280" height="50" rx="5" class="dgm-box"/>
+  <text x="180" y="228" text-anchor="middle" class="dgm-label">3. Build clickable artifact</text>
+  <text x="180" y="242" text-anchor="middle" class="dgm-text-small">live HTML mockup → review with</text>
+  <text x="180" y="254" text-anchor="middle" class="dgm-text-small">stakeholders before code is written</text>
+  <rect x="360" y="40" width="320" height="240" rx="10" fill="#eef4ec" stroke="#4a7a4a" stroke-width="1.2"/>
+  <text x="520" y="64" text-anchor="middle" class="dgm-label" style="font-size:14px;fill:#4a7a4a;">Claude Code</text>
+  <text x="520" y="80" text-anchor="middle" class="dgm-text-small">build + test + ship</text>
+  <rect x="380" y="100" width="280" height="40" rx="5" class="dgm-box"/>
+  <text x="520" y="118" text-anchor="middle" class="dgm-label">4. Open repo in Claude Code</text>
+  <text x="520" y="132" text-anchor="middle" class="dgm-text-small">point CLAUDE.md at the spec.md from step 2</text>
+  <rect x="380" y="155" width="280" height="40" rx="5" class="dgm-box"/>
+  <text x="520" y="173" text-anchor="middle" class="dgm-label">5. Implement, test, commit</text>
+  <text x="520" y="187" text-anchor="middle" class="dgm-text-small">terminal or IDE; modes for safety</text>
+  <rect x="380" y="210" width="280" height="50" rx="5" class="dgm-box"/>
+  <text x="520" y="228" text-anchor="middle" class="dgm-label">6. Long build → mobile pings</text>
+  <text x="520" y="242" text-anchor="middle" class="dgm-text-small">use Cowork mobile to monitor</text>
+  <text x="520" y="254" text-anchor="middle" class="dgm-text-small">the long-running Claude Code session</text>
+  <path d="M 340 175 L 380 175" stroke="#333" stroke-width="2" marker-end="url(#arrowhead-cw)"/>
+  <path d="M 380 240 Q 350 285 180 270 Q 60 260 60 270" fill="none" stroke="#666" stroke-width="1.4" stroke-dasharray="5 4" marker-end="url(#arrowhead-cw)"/>
+  <text x="180" y="305" text-anchor="middle" class="dgm-text-small" style="font-style:italic;">monitor + iterate from anywhere</text>
+</svg>
+<figcaption>A typical Cowork → Claude Code → Cowork loop. Brainstorm and spec in Cowork; build in Claude Code; monitor and iterate from Cowork mobile.</figcaption>
+</figure>
+
+<p>Step-by-step, the workflow looks like:</p>
+<ol>
+  <li><strong>Brainstorm in mobile Cowork.</strong> "I want a tool that lets ops people see open Linear issues by team." Voice it in, get a back-and-forth.</li>
+  <li><strong>Spec in desktop Cowork.</strong> Ask Cowork to turn the brainstorm into a clean <code>spec.md</code>. Save it to your workspace folder.</li>
+  <li><strong>Build a clickable artifact.</strong> Have Cowork generate a live HTML mockup as an artifact, pulling sample data from the Linear connector. Review it with the people who'll actually use it.</li>
+  <li><strong>Hand off to Claude Code.</strong> In your IDE, create the repo. Drop the <code>spec.md</code> in <code>docs/</code>. Reference it from <code>CLAUDE.md</code> with <code>@docs/spec.md</code>. Now Claude Code starts every turn knowing exactly what you're building.</li>
+  <li><strong>Implement.</strong> Use Plan mode for the first pass, then Accept Edits to grind through. Tests, types, commits.</li>
+  <li><strong>Monitor on mobile.</strong> When a build or test run takes a while, Cowork mobile pings you when it needs input, push notifications on a background Claude Code session.</li>
+</ol>
+<div class="callout tip"><strong>The pattern</strong><p>Cowork is for the parts where you're <em>figuring out what to make</em>; Claude Code is for the parts where you're <em>making it</em>. Both can do both, but each is much better at its half.</p></div>
+
+<h3>Pairing an IDE project with a Cowork project (and how they "talk")</h3>
+<p>The honest answer in April 2026: <strong>they don't share state directly</strong>. Claude Code lives in your repo; Cowork lives in your workspace folder and the cloud. There's no automatic two-way sync of conversation history, no shared "memory" between sessions. But there are several practical ways to keep them paired:</p>
+
+<h4>Three patterns for keeping context in sync</h4>
+<table class="compare-tbl">
+<thead><tr><th>Pattern</th><th>How it works</th><th>Best for</th></tr></thead>
+<tbody>
+<tr><td><strong>Shared folder</strong></td><td>Point Cowork's workspace folder at your repo (or a sibling folder). Both tools read/write the same files, <code>spec.md</code>, <code>decisions.md</code>, generated docs.</td><td>Solo work. Simplest path. The filesystem is the integration.</td></tr>
+<tr><td><strong>Shared <code>CLAUDE.md</code> / memory files</strong></td><td>Claude Code reads <code>CLAUDE.md</code> from the repo. Cowork can read the same file via its workspace folder. One source of truth for "what does the model need to know about this project?"</td><td>Teams. Anyone on the project gets the same context whichever tool they open.</td></tr>
+<tr><td><strong>Shared MCP / connector</strong></td><td>Both surfaces connect to the same Linear / GitHub / Notion. The <em>system you're working on</em> is the shared state, not the conversation.</td><td>Anything where the artifact lives in a third tool (a Notion doc, a Linear ticket, a GitHub PR).</td></tr>
+</tbody>
+</table>
+
+<h4>Migrating context between them</h4>
+<p>When you've done a big chunk of work in one and want to continue in the other, the move is usually: <strong>have the source surface write a handoff doc</strong>, then point the destination surface at it.</p>
+<ul>
+  <li><strong>Cowork → Claude Code.</strong> "Summarize what we decided in this conversation as <code>handoff.md</code>, with: the goal, key decisions, open questions, and the next three steps." Save to the repo. In Claude Code, start with: "Read <code>handoff.md</code>, then begin step 1."</li>
+  <li><strong>Claude Code → Cowork.</strong> Have Claude Code write a status update to <code>status.md</code> at the end of a long session, what shipped, what's blocked, what's next. Open Cowork on top of the same folder; ask it to draft the Slack/email update from <code>status.md</code>.</li>
+</ul>
+<div class="callout confuse"><strong>Common confusion</strong><p>"Why doesn't my Cowork conversation show up in Claude Code?" Because they don't share a conversation log. Treat the <em>filesystem</em> as the integration point, not the chat history. Anything you want both to see, write to a file both can read.</p></div>
+<div class="callout tip"><strong>Pattern that scales</strong><p>For any project I expect to use both tools on, I create three files in the repo: <code>spec.md</code> (what we're building), <code>decisions.md</code> (append-only log of choices), and <code>handoff.md</code> (current state, refreshed at each switch). Both tools read and write these. They're the shared brain.</p></div>
+
+<h3>Decision tree</h3>
+<pre><code>Are you writing code?
+├─ Yes → Claude Code (terminal if power-user, VS Code extension otherwise)
+└─ No
+   ├─ Files, docs, email, tasks? → Cowork
+   ├─ Quick one-off question? → claude.ai or the desktop app
+   └─ Building an agent into your own product? → Claude Agent SDK</code></pre>
+
+<!-- PART 2 -->
+<h2 id="p2"><span class="part-num">Part 2</span>Anatomy of a Claude Code project</h2>
+<p>This is the part most people never get a clean mental model of. Four building blocks: <code>CLAUDE.md</code>, skills, MCPs, sub-agents. They compose.</p>
+
+<figure>
+<svg viewBox="0 0 700 760" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Sequential flow: what loads when, in order">
+  <defs>
+    <marker id="arrowhead-seq" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#333"/>
+    </marker>
+  </defs>
+  <!-- Step labels -->
+  <g font-family="system-ui, sans-serif">
+    <!-- Step 1: Session start -->
+    <rect x="40" y="20" width="80" height="100" rx="8" fill="#fbece3" stroke="#c8542b" stroke-width="1.5"/>
+    <text x="80" y="45" text-anchor="middle" font-size="11" font-weight="700" fill="#c8542b" letter-spacing="0.05em">STEP 1</text>
+    <text x="80" y="62" text-anchor="middle" font-size="12" font-weight="600">Session</text>
+    <text x="80" y="78" text-anchor="middle" font-size="12" font-weight="600">starts</text>
+    <text x="80" y="100" text-anchor="middle" font-size="10" fill="#666" font-style="italic">one-time, at boot</text>
+    <rect x="160" y="20" width="500" height="100" rx="8" fill="white" stroke="#999" stroke-width="1"/>
+    <text x="180" y="42" font-size="13" font-weight="600">Loaded into context up-front:</text>
+    <text x="190" y="62" font-size="12">• System prompt (Anthropic's)</text>
+    <text x="190" y="80" font-size="12">• <tspan font-weight="600">All MCP tool schemas</tspan>, every connected MCP loads every tool's full JSONSchema</text>
+    <text x="190" y="98" font-size="12">• Skill <tspan font-weight="600">names + descriptions only</tspan> (bodies stay on disk)</text>
+    <text x="190" y="113" font-size="10" fill="#888" font-style="italic">↳ this is why a chatty MCP is expensive before you type a word</text>
+
+    <!-- Arrow 1→2 -->
+    <line x1="350" y1="125" x2="350" y2="155" stroke="#333" stroke-width="2" marker-end="url(#arrowhead-seq)"/>
+
+    <!-- Step 2: Every turn -->
+    <rect x="40" y="160" width="80" height="100" rx="8" fill="#fbece3" stroke="#c8542b" stroke-width="1.5"/>
+    <text x="80" y="185" text-anchor="middle" font-size="11" font-weight="700" fill="#c8542b" letter-spacing="0.05em">STEP 2</text>
+    <text x="80" y="202" text-anchor="middle" font-size="12" font-weight="600">You hit</text>
+    <text x="80" y="218" text-anchor="middle" font-size="12" font-weight="600">enter</text>
+    <text x="80" y="240" text-anchor="middle" font-size="10" fill="#666" font-style="italic">every turn</text>
+    <rect x="160" y="160" width="500" height="100" rx="8" fill="white" stroke="#999" stroke-width="1"/>
+    <text x="180" y="182" font-size="13" font-weight="600">Added to context for this turn:</text>
+    <text x="190" y="202" font-size="12">• <tspan font-weight="600">CLAUDE.md</tspan> + everything <tspan font-family="ui-monospace" font-size="11">@imported</tspan> (re-read every single turn)</text>
+    <text x="190" y="220" font-size="12">• Your <tspan font-weight="600">prompt</tspan> (the words you typed)</text>
+    <text x="190" y="238" font-size="12">• Conversation history so far</text>
+    <text x="190" y="253" font-size="10" fill="#888" font-style="italic">↳ CLAUDE.md is tax you pay every turn, keep it lean</text>
+
+    <!-- Arrow 2→3 -->
+    <line x1="350" y1="265" x2="350" y2="295" stroke="#333" stroke-width="2" marker-end="url(#arrowhead-seq)"/>
+
+    <!-- Step 3: Model decides -->
+    <rect x="40" y="300" width="80" height="100" rx="8" fill="#fbece3" stroke="#c8542b" stroke-width="1.5"/>
+    <text x="80" y="325" text-anchor="middle" font-size="11" font-weight="700" fill="#c8542b" letter-spacing="0.05em">STEP 3</text>
+    <text x="80" y="342" text-anchor="middle" font-size="12" font-weight="600">Model</text>
+    <text x="80" y="358" text-anchor="middle" font-size="12" font-weight="600">thinks</text>
+    <text x="80" y="380" text-anchor="middle" font-size="10" fill="#666" font-style="italic">decision point</text>
+    <rect x="160" y="300" width="500" height="100" rx="8" fill="white" stroke="#999" stroke-width="1"/>
+    <text x="180" y="322" font-size="13" font-weight="600">Two choices:</text>
+    <text x="190" y="345" font-size="12">A. <tspan font-weight="600">Answer directly</tspan> → write a response → done.</text>
+    <text x="190" y="368" font-size="12">B. <tspan font-weight="600">Call a tool</tspan> → pick one of: built-in tool, MCP tool, skill, or sub-agent.</text>
+    <text x="190" y="388" font-size="10" fill="#888" font-style="italic">↳ Skills compete with MCP tools and built-ins on description match.</text>
+
+    <!-- Arrow 3→4 -->
+    <line x1="350" y1="405" x2="350" y2="435" stroke="#333" stroke-width="2" marker-end="url(#arrowhead-seq)"/>
+
+    <!-- Step 4: Tool fires -->
+    <rect x="40" y="440" width="80" height="220" rx="8" fill="#fbece3" stroke="#c8542b" stroke-width="1.5"/>
+    <text x="80" y="465" text-anchor="middle" font-size="11" font-weight="700" fill="#c8542b" letter-spacing="0.05em">STEP 4</text>
+    <text x="80" y="482" text-anchor="middle" font-size="12" font-weight="600">Tool</text>
+    <text x="80" y="498" text-anchor="middle" font-size="12" font-weight="600">runs</text>
+    <text x="80" y="520" text-anchor="middle" font-size="10" fill="#666" font-style="italic">whichever was picked</text>
+
+    <rect x="160" y="440" width="240" height="100" rx="6" fill="#f7f3ec" stroke="#c8542b" stroke-width="1"/>
+    <text x="180" y="462" font-size="12" font-weight="700" fill="#c8542b">If a SKILL was chosen</text>
+    <text x="180" y="482" font-size="11">→ skill body loads now</text>
+    <text x="180" y="498" font-size="11">→ scripts/reference pulled in</text>
+    <text x="180" y="514" font-size="11">→ skill follows its own instructions,</text>
+    <text x="180" y="528" font-size="11">   typically calling more tools</text>
+
+    <rect x="420" y="440" width="240" height="100" rx="6" fill="white" stroke="#999" stroke-width="1"/>
+    <text x="440" y="462" font-size="12" font-weight="700">If a built-in / MCP tool was chosen</text>
+    <text x="440" y="482" font-size="11">→ schema is already in context</text>
+    <text x="440" y="498" font-size="11">→ tool runs (Read, Edit, Bash,</text>
+    <text x="440" y="514" font-size="11">   linear.create_issue, etc.)</text>
+    <text x="440" y="528" font-size="11">→ result returns</text>
+
+    <rect x="160" y="555" width="500" height="95" rx="6" fill="white" stroke="#999" stroke-width="1"/>
+    <text x="180" y="577" font-size="12" font-weight="700">If a SUB-AGENT was spawned</text>
+    <text x="190" y="595" font-size="11">→ a fresh context window opens for the sub-agent</text>
+    <text x="190" y="611" font-size="11">→ it does its own loop (Steps 2-4 recursively, in isolation)</text>
+    <text x="190" y="627" font-size="11">→ when finished, it returns <tspan font-weight="700">only its final message</tspan> to the parent</text>
+    <text x="190" y="643" font-size="10" fill="#888" font-style="italic">↳ this keeps the main context clean while the sub-agent does heavy lifting.</text>
+
+    <!-- Arrow 4→5 -->
+    <line x1="350" y1="660" x2="350" y2="690" stroke="#333" stroke-width="2" marker-end="url(#arrowhead-seq)"/>
+
+    <!-- Step 5: Loop -->
+    <rect x="40" y="695" width="80" height="50" rx="8" fill="#fbece3" stroke="#c8542b" stroke-width="1.5"/>
+    <text x="80" y="715" text-anchor="middle" font-size="11" font-weight="700" fill="#c8542b" letter-spacing="0.05em">STEP 5</text>
+    <text x="80" y="732" text-anchor="middle" font-size="12" font-weight="600">Loop</text>
+    <rect x="160" y="695" width="500" height="50" rx="8" fill="#eef4ec" stroke="#4a7a4a" stroke-width="1.2"/>
+    <text x="180" y="717" font-size="13" font-weight="600">Result enters context → back to Step 3.</text>
+    <text x="180" y="733" font-size="11">Repeat until the model answers without calling a tool, that's "turn done."</text>
+  </g>
+</svg>
+<figcaption>What actually happens, in order. The numbered steps are the timeline; the boxes on the right are what loads or runs at each step. Skills only load their bodies in Step 4 (and only the one that was picked).</figcaption>
+</figure>
+
+<h3>CLAUDE.md</h3>
+<p><code>CLAUDE.md</code> is <strong>a system-prompt append</strong>, not a README. Every turn, its content is silently prepended to Claude's context. It's how you teach Claude the durable, project-specific truths: "we use pnpm, not npm." "Tests live in <code>__tests__/</code>, run with <code>pnpm test</code>." "Don't touch <code>legacy/</code> without asking."</p>
+<p>Key properties:</p>
+<ul>
+  <li><strong>Loaded every turn.</strong> Every single message, the whole file's tokens are paid. Keep it tight.</li>
+  <li><strong>Imports via <code>@path</code>.</strong> Write <code>@docs/architecture.md</code> in your <code>CLAUDE.md</code> and Claude Code inlines that file. Lets you split a big brain into smaller files.</li>
+  <li><strong><code>CLAUDE.local.md</code> for machine-specific stuff.</strong> Personal notes, paths, toggles you don't want in git. Gitignored by convention.</li>
+  <li><strong>Conciseness rules.</strong> Write it like a sharp team onboarding doc, not a textbook. Short sections. Bullet points. Zero filler. If a line doesn't change what Claude does, delete it.</li>
+</ul>
+<div class="callout confuse"><strong>Common confusion</strong><p><code>CLAUDE.md</code> is not a README. READMEs describe a project to humans. <code>CLAUDE.md</code> tells Claude how to <em>work inside</em> the project. Different audience, different content.</p></div>
+<div class="callout tip"><strong>Rule of thumb</strong><p>If you're writing the same instructions into prompts over and over, move them to <code>CLAUDE.md</code>. If you're writing them into <code>CLAUDE.md</code> and only one person on your team uses them, move them to <code>CLAUDE.local.md</code>.</p></div>
+
+<h3>Skills</h3>
+<p>A <strong>skill</strong> is a folder with a <code>SKILL.md</code> and optionally scripts/reference files. It teaches Claude how to do one specific kind of task <em>when it becomes relevant</em>, without paying for all that context every single turn.</p>
+<pre><code>.claude/skills/pptx/
+├── SKILL.md          # frontmatter + instructions
+├── scripts/
+│   └── build_deck.py
+└── reference/
+    └── slide_templates.md</code></pre>
+
+<h4>Naming a skill: folder, file, frontmatter</h4>
+<p>A skill has three names that need to agree, plus one rule per layer:</p>
+<table class="compare-tbl">
+<thead><tr><th>What</th><th>Convention</th><th>Example</th></tr></thead>
+<tbody>
+<tr><td>Skill <strong>folder</strong> name</td><td><code>kebab-case</code>, lowercase, short, verb-or-noun. Lives under <code>.claude/skills/</code> (project) or <code>~/.claude/skills/</code> (user).</td><td><code>pptx</code>, <code>account-research</code>, <code>release-notes-writer</code></td></tr>
+<tr><td>The skill file</td><td><strong>Always <code>SKILL.md</code></strong> (uppercase, exactly that name). The runner finds skills by walking folders for this filename.</td><td><code>SKILL.md</code></td></tr>
+<tr><td>The <code>name</code> in frontmatter</td><td>Same kebab-case as the folder. Match them, that's how skills are referenced in logs, errors, and other skills.</td><td><code>name: account-research</code></td></tr>
+<tr><td>Plugin-namespaced skill</td><td>When a skill ships in a plugin, it appears as <code>plugin:skill</code>. Don't put the plugin name in the folder; the marketplace adds it.</td><td><code>sales:account-research</code></td></tr>
+<tr><td>Optional <code>scripts/</code> folder</td><td>Inside the skill folder. Scripts called by name from <code>SKILL.md</code>. Use the same kebab-case for filenames.</td><td><code>scripts/build-deck.py</code></td></tr>
+<tr><td>Optional <code>reference/</code> folder</td><td>Inside the skill folder. Markdown reference docs the skill loads on demand.</td><td><code>reference/slide-templates.md</code></td></tr>
+</tbody>
+</table>
+<div class="callout tip"><strong>Naming heuristics</strong><p><strong>Verb-first</strong> for skills that do something (<code>draft-outreach</code>, <code>build-dashboard</code>). <strong>Noun-only</strong> for format-skills that wrap a file type (<code>pptx</code>, <code>docx</code>, <code>pdf</code>). Avoid generic names like <code>helper</code>, <code>utils</code>, <code>writer</code>, they collide with other plugins and they don't tell future-you what they do.</p></div>
+
+<h4>Why <code>.md</code> and not some other format?</h4>
+<p>The whole skill folder is conventionally Markdown plus optional scripts. Three reasons it's <code>.md</code> specifically, not <code>.txt</code>, <code>.yaml</code>, <code>.json</code>, or a custom format:</p>
+<ol>
+  <li><strong>The model already speaks Markdown fluently.</strong> Claude was trained on enormous amounts of Markdown. READMEs, docs, blog posts. Headers, lists, code fences, tables: zero translation cost. JSON or YAML would be a worse signal.</li>
+  <li><strong>Humans read and edit it directly.</strong> A skill should be reviewable in ten seconds. Markdown gives you human <em>and</em> machine readability with no toolchain.</li>
+  <li><strong>YAML frontmatter handles the structured bits.</strong> Skills need <em>some</em> structured metadata (<code>name</code>, <code>description</code>, optional <code>allowed-tools</code>). YAML at the top of an <code>.md</code> file is the standard way to do that, same pattern as Jekyll, Hugo, and a thousand static-site generators.</li>
+  <li><strong>It composes with imports.</strong> CLAUDE.md uses <code>@path</code> imports; reference files inside skills are also Markdown; everything stitches together without format conversion.</li>
+</ol>
+<p>The minimal SKILL.md looks like this:</p>
+<pre><code>---
+name: release-notes-writer
+description: Use when the user asks to draft release notes from git
+  commits. Triggers on "release notes", "changelog", or "what shipped
+  in vX.Y". Do NOT use for marketing announcements or blog posts.
+---
+
+# Release notes writer
+
+Read the last N commits with `git log --since=...`, group into
+User-facing / Bug fixes / Performance / Internal, and write in
+second person, past tense, no emoji. Always include "Thanks to" with
+unique commit authors.</code></pre>
+<div class="callout warn"><strong>Don't reach for non-Markdown formats</strong><p>You'll occasionally see proposals to use JSON or YAML files for skill <em>instructions</em>. Resist. The instructions are prose Claude will read and follow. Markdown wins. Reserve YAML for the frontmatter, JSON for genuine config files (e.g. <code>.mcp.json</code>).</p></div>
+
+<h4>Progressive disclosure, the key insight</h4>
+<p>Only the skill's <strong>name and description</strong> are loaded at session start. The body, instructions, reference files, scripts, is only pulled into context <em>if the description matches what the user asks</em>. This is why skills scale. You can have hundreds installed and pay almost nothing for the ones that don't fire.</p>
+
+<h4>The <code>description</code> is the trigger</h4>
+<p>Claude decides whether to invoke a skill based on its description. This is where most skill failures happen.</p>
+<p><strong>Bad description:</strong> "Helpful for presentations." (Too vague. What counts? When?)</p>
+<p><strong>Good description:</strong> "Use when the user wants to create, read, edit, or manipulate PowerPoint (.pptx) files, or asks for a slide deck, presentation, or pitch deck. Do NOT use for Google Slides or PDFs."</p>
+<p>The good version has explicit triggers (verbs + file types), concrete synonyms, and exclusions. Write descriptions as if a co-worker is deciding whether to interrupt you for this task.</p>
+
+<h4>Skill categories</h4>
+<ul>
+  <li><strong>Project/domain skills.</strong> "How we write RFCs at Acme." Lives in the repo.</li>
+  <li><strong>Task skills.</strong> <code>docx</code>, <code>pptx</code>, <code>xlsx</code>, <code>pdf</code>. Generic output creation. Pull from trusted sources.</li>
+  <li><strong>Tool-wrapper skills.</strong> Judgment on top of an MCP. "When querying the warehouse via the MCP, always filter by <code>env='prod'</code> first."</li>
+</ul>
+
+<div class="callout tip"><strong>MCP + skill together</strong><p>MCP = capability ("can call the warehouse"). Skill = judgment ("here's how <em>we</em> call the warehouse"). You almost always want both for an external tool that matters to your workflow.</p></div>
+
+<h4>Where your skills come from</h4>
+<ol>
+  <li><strong>Build from scratch</strong> when the need is company-specific or deeply personal to your workflow.</li>
+  <li><strong>Pull from someone else's plugin or GitHub repo</strong> when the need is generic. <code>docx</code>, <code>pptx</code>, <code>pdf</code>, popular-framework helpers. Don't rebuild what good versions already exist for.</li>
+  <li><strong>Fork and customize</strong> when something is close but not quite.</li>
+</ol>
+<p>Trust review, same as for MCPs, before installing any skill from outside: check the source, the maintainer, what the skill's scripts actually do. Skills can execute code.</p>
+<ul>
+  <li>🟢 <strong>Green:</strong> Anthropic-official, reputable maintainer, simple readable scripts, no network, no secret handling.</li>
+  <li>🟡 <strong>Yellow:</strong> Active community maintainer, moderate complexity, you've read the scripts.</li>
+  <li>🔴 <strong>Red:</strong> Unknown author, complex scripts, network calls, secret prompts. Don't install.</li>
+</ul>
+
+<h4>Debugging: "why didn't my skill fire?"</h4>
+<ul>
+  <li>Is the description specific enough? (Test: paste your user message + description into a chat and ask "would this skill fire?")</li>
+  <li>Does Claude know the skill exists? (Check <code>/doctor</code> or equivalent.)</li>
+  <li>Is the user's phrasing too different from the description's keywords?</li>
+  <li>Is a different skill with a broader description winning?</li>
+  <li>Is your skill file actually being discovered (correct folder, correct frontmatter)?</li>
+</ul>
+
+<h3>MCPs (Model Context Protocol)</h3>
+<p>An <strong>MCP server</strong> is a standard way to expose external tools (APIs, databases, services) to an LLM agent. MCP is now an open standard, donated by Anthropic to the <strong>Agentic AI Foundation</strong> (under the Linux Foundation). Any LLM that speaks MCP can use any MCP server.</p>
+
+<h4>How MCPs differ from skills</h4>
+<ul>
+  <li>A <strong>skill</strong> is prose + optional scripts, scoped to your project or install.</li>
+  <li>An <strong>MCP</strong> is a running process (or remote service) that exposes <em>tools</em> Claude can call with typed parameters.</li>
+</ul>
+<p>A skill instructs Claude. An MCP gives Claude new tools.</p>
+
+<h4>Install scope</h4>
+<p><strong>User-level</strong> (<code>~/.claude/</code> or <code>claude mcp add ...</code>), available in every project. <strong>Project-level</strong> (<code>.mcp.json</code> at project root), shared with your team via git.</p>
+<p>Example, add an MCP at user scope:</p>
+<pre><code>claude mcp add linear --scope user \
+  --command "npx -y @linear/mcp-server" \
+  --env LINEAR_API_KEY=sk-...</code></pre>
+<p>Example <code>.mcp.json</code> at project scope:</p>
+<pre><code>{
+  "mcpServers": {
+    "postgres": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-postgres", "postgresql://localhost/app"]
+    }
+  }
+}</code></pre>
+<p>Personal things (your API keys, your scratchpad) → user scope. Shared things the whole team needs → project scope.</p>
+
+<h4>Schema-loading reality, the expensive part</h4>
+<div class="callout warn"><strong>The hidden cost</strong><p>Every connected MCP loads <em>all</em> its tool schemas into context at session start. That's the full JSONSchema for every tool the MCP exposes, names, descriptions, parameters, types. Before you type a word, you're paying for every tool in every connected MCP.</p><p>A chatty MCP with 40 tools can easily consume 5-10k tokens just in schemas. Multiply by every session. This is the single biggest invisible cost in a Claude Code project.</p></div>
+<p>The newer <strong>Tool Search</strong> feature (recently released for the API) flips this: only tool <em>names</em> load at start; full schemas are fetched on demand. Worth enabling where available.</p>
+
+<h4>Trust and safety</h4>
+<p>MCPs are programs running on your machine (or remote services handed your credentials). Treat installing an MCP like running <code>curl | bash</code>. Before adding one: who's the maintainer, is the source repo active, what permissions does it request, how does it handle secrets? Red/yellow/green applies here too.</p>
+
+<h4>Official vs community</h4>
+<p>Anthropic publishes an official MCP directory with 75+ connectors covering the usual: Gmail, Drive, Linear, Notion, Jira, Slack, GitHub, Figma. Start there. The community ecosystem is enormous but variable quality.</p>
+
+<h4>When to build your own MCP</h4>
+<ul>
+  <li>You have a proprietary internal system you want Claude to reach.</li>
+  <li>Existing MCPs are close but missing a tool you need constantly.</li>
+  <li>You want the same capability shared across your team.</li>
+</ul>
+<p>Skip building one when a skill that shells out to your CLI would do the same job with less infrastructure.</p>
+
+<h4>Do I need a skill on top of my MCP?</h4>
+<p>Usually yes, if the MCP matters to your workflow. Worked examples:</p>
+<ul>
+  <li><strong>Warehouse (Snowflake/BigQuery).</strong> MCP gives Claude the ability to query. A skill tells it: which schemas you use, naming conventions, common joins, the one metric definition that causes 80% of disputes, when to stop and ask before a long query.</li>
+  <li><strong>Clay.</strong> MCP reads/writes workbooks and enrichment tables. A skill encodes your ICP definition, trusted enrichment sources, and what good output looks like.</li>
+  <li><strong>Figma.</strong> MCP exposes files, pages, nodes. A skill encodes your design system tokens and what "handoff-ready" means at your company.</li>
+</ul>
+
+<h3>Sub-agents (and the four meanings of "agent")</h3>
+<p>The word "agent" in this ecosystem means at least four distinct things. Conflating them is a major source of confusion.</p>
+<ol>
+  <li><strong>The Task tool.</strong> Claude Code's built-in general-purpose sub-agent spawner. You say "explore how auth is wired across the codebase and summarize." It launches a sub-agent; the sub-agent does its own multi-tool exploration; returns a single summary message.</li>
+  <li><strong>Named sub-agents in <code>.claude/agents/</code>.</strong> Specialized sub-agents with their own system prompt, tool allowlist, and model. Example: a <code>code-reviewer</code> agent that only gets read-only tools.</li>
+  <li><strong>Multiple Task calls in one message.</strong> Fire several Task calls at once; they run in parallel, all report back to the same parent. Good for "look at these five things concurrently."</li>
+  <li><strong>Multiple Claude Code sessions.</strong> Open two terminals, run Claude Code in each. They don't share context. They don't coordinate. Just two humans' worth of Claude side-by-side.</li>
+</ol>
+
+<h4>Why sub-agents have isolated context windows</h4>
+<p>This is the whole point. A sub-agent's exploration, all the files it reads, tool outputs, reasoning, happens in its own context window. When it's done, it returns <em>only its final message</em> to the parent. The parent context stays clean.</p>
+<p><strong>The cost:</strong> the return message costs parent tokens. And the sub-agent itself costs tokens, just in its own window. You didn't get the work free, you paid the tokens in a different bucket, and kept the main bucket clean.</p>
+<div class="callout confuse"><strong>Common confusion</strong><p>"Sub-agents are faster." Not inherently. They're the same model, same loop. They're <em>isolating</em>, not <em>accelerating</em>. Parallel Task calls <em>are</em> faster for independent work because they run concurrently.</p></div>
+
+<!-- PART 3 -->
+<h2 id="p3"><span class="part-num">Part 3</span>Ideal project setups (templates)</h2>
+<p>Five templates. Each shows the surface, a <code>CLAUDE.md</code> sketch, skills, MCPs/connectors, sub-agents, and useful hooks. Fictional examples, substitute your own.</p>
+
+<h3>3.1 Mobile app development</h3>
+<p><strong>Surface:</strong> Claude Code in VS Code or terminal, with Xcode or Android Studio open.</p>
+<pre><code># Project: &lt;App&gt;
+Stack: React Native + TypeScript, Expo, Supabase backend.
+Package manager: pnpm. Never npm.
+Tests: `pnpm test`. Lint: `pnpm lint`. Type-check: `pnpm typecheck`.
+Before finishing any task: run lint + typecheck + relevant tests.
+
+@docs/architecture.md
+@docs/conventions.md
+
+## Do-not-touch
+- `ios/`, `android/` (native shells), ask first
+- `migrations/`, ask first</code></pre>
+<p><strong>Skills:</strong> <code>react-native-conventions</code>, <code>storybook-component</code>, <code>e2e-test-writer</code> (project-specific); <code>docx</code>, <code>pptx</code> (task, rarely used).</p>
+<p><strong>MCPs:</strong> GitHub (PRs, issues), Sentry (errors), Supabase (schema lookups).</p>
+<p><strong>Sub-agents:</strong> <code>code-reviewer</code> (read-only, adversarial), <code>test-writer</code> (scoped to a feature folder).</p>
+<p><strong>Hooks:</strong> <code>PostToolUse</code> on <code>Edit</code>/<code>Write</code> → auto-run <code>prettier</code> on the edited file. <code>Stop</code> → run <code>pnpm typecheck</code> and surface results.</p>
+
+<h3>3.2 Data analysis</h3>
+<p><strong>Surface:</strong> Claude Code in terminal, notebook or SQL client alongside.</p>
+<pre><code># Analytics project
+Warehouse: Snowflake, dbt models in `/models`.
+Never run a query on raw tables, always use dbt marts: `fct_*`, `dim_*`.
+Our canonical metrics are defined in `@docs/metrics.md`, use those definitions.
+Date column convention: `event_date` in UTC.
+
+## Safety
+- No DROP, DELETE, UPDATE on anything outside `scratch_&lt;user&gt;`.
+- Long queries: explain plan first, confirm before running.</code></pre>
+<p><strong>Skills:</strong> <code>sql-queries</code>, <code>explore-data</code>, <code>validate-data</code>, <code>data-viz</code> (task); <code>&lt;company&gt;-metrics</code> (project).</p>
+<p><strong>MCPs:</strong> Snowflake (or equivalent warehouse MCP), a BI tool MCP if available.</p>
+<p><strong>Sub-agents:</strong> <code>query-reviewer</code> (reviews SQL before it's run on prod).</p>
+<p><strong>Hooks:</strong> <code>PreToolUse</code> on Bash → block any SQL that includes <code>DROP|DELETE|UPDATE</code> outside of <code>scratch_*</code>.</p>
+
+<h3>3.3 RevOps / Sales AE with Clay</h3>
+<p><strong>Surface:</strong> Cowork (AE persona). Claude Code unlikely here.</p>
+<pre><code># My sales workspace
+Persona: AE at &lt;Company&gt; selling to &lt;generic segment&gt;.
+ICP: @icp.md
+Tone of voice: @voice.md
+When drafting outreach, always pull fresh account context before writing.</code></pre>
+<p><strong>Skills:</strong> <code>account-research</code>, <code>call-prep</code>, <code>call-summary</code>, <code>draft-outreach</code>, <code>pipeline-review</code> (sales plugin); <code>&lt;company&gt;-pitch-narrative</code> (project).</p>
+<p><strong>Connectors:</strong> Gmail, Calendar, Salesforce or Close, Clay, Fireflies (transcripts), Slack.</p>
+<p><strong>Scheduled tasks:</strong> daily morning brief at 8am, pulls calendar, flags top 3 deals to push, drafts follow-ups for yesterday's calls.</p>
+
+<h3>3.4 Wedding planning (personal)</h3>
+<p><strong>Surface:</strong> Cowork. Shared workspace folder on Drive.</p>
+<pre><code># Wedding
+Venue shortlist: @venues.md
+Budget: @budget.xlsx
+Guest list: @guests.xlsx
+Decisions log: @decisions.md, always append, never rewrite.
+Vendors: @vendors.md
+
+## Style
+Short summaries. Tables where they help. No purple prose.</code></pre>
+<p><strong>Skills:</strong> <code>docx</code>, <code>xlsx</code> (task); <code>decisions-log</code> (project, appends with date + context).</p>
+<p><strong>Connectors:</strong> Gmail (vendor emails), Drive, Calendar (venue visits).</p>
+<p><strong>Scheduled tasks:</strong> weekly digest, unread vendor emails summarized, upcoming tasting dates, open decisions.</p>
+<p><strong>Artifacts:</strong> a live "wedding dashboard" that refreshes each open, budget vs spend, open todos, vendor confirm status.</p>
+
+<h3>3.5 Day-to-day task manager (Cowork-native)</h3>
+<p><strong>Surface:</strong> Cowork, with the <code>productivity</code> plugin installed.</p>
+<p><strong>CLAUDE.md / TASKS.md:</strong> The productivity plugin owns <code>TASKS.md</code> and a <code>memory/</code> directory. Don't hand-write it, let the <code>productivity:start</code> and <code>productivity:update</code> skills bootstrap it.</p>
+<p><strong>Skills:</strong> <code>productivity:*</code> (the whole set, task management, memory, update, start).</p>
+<p><strong>Connectors:</strong> Gmail, Calendar, and whichever project tracker you use (Linear, Asana, Jira, ClickUp, Monday).</p>
+<p><strong>Scheduled tasks:</strong> morning briefing (7:30am), end-of-day wrap (5:30pm).</p>
+<p><strong>Artifact:</strong> a persistent dashboard of open tasks + today's calendar that refreshes on each open.</p>
+
+<!-- PART 4 -->
+<h2 id="p4"><span class="part-num">Part 4</span>Modes: how you drive the agent</h2>
+<p>Modes control <strong>what Claude is allowed to do without asking you</strong>. They're about permission, not capability.</p>
+
+<figure>
+<svg viewBox="0 0 700 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Mode decision tree">
+  <rect x="260" y="20" width="180" height="44" rx="22" class="dgm-box-accent"/>
+  <text x="350" y="46" text-anchor="middle" class="dgm-label">What's the situation?</text>
+  <rect x="40" y="110" width="140" height="48" rx="6" class="dgm-box"/>
+  <text x="110" y="132" text-anchor="middle" class="dgm-label">Just exploring</text>
+  <text x="110" y="148" text-anchor="middle" class="dgm-text-small">→ Plan mode</text>
+  <rect x="200" y="110" width="140" height="48" rx="6" class="dgm-box"/>
+  <text x="270" y="132" text-anchor="middle" class="dgm-label">Routine, trusted</text>
+  <text x="270" y="148" text-anchor="middle" class="dgm-text-small">→ Accept Edits</text>
+  <rect x="360" y="110" width="140" height="48" rx="6" class="dgm-box"/>
+  <text x="430" y="132" text-anchor="middle" class="dgm-label">Unknown / risky</text>
+  <text x="430" y="148" text-anchor="middle" class="dgm-text-small">→ Default</text>
+  <rect x="520" y="110" width="140" height="48" rx="6" class="dgm-box"/>
+  <text x="590" y="132" text-anchor="middle" class="dgm-label">Sandboxed</text>
+  <text x="590" y="148" text-anchor="middle" class="dgm-text-small">→ Auto (or Bypass)</text>
+  <path d="M 310 65 L 130 108" class="dgm-arrow"/>
+  <path d="M 330 65 L 280 108" class="dgm-arrow"/>
+  <path d="M 370 65 L 420 108" class="dgm-arrow"/>
+  <path d="M 390 65 L 580 108" class="dgm-arrow"/>
+  <rect x="40" y="200" width="620" height="90" rx="6" class="dgm-box-muted"/>
+  <text x="350" y="222" text-anchor="middle" class="dgm-label">Shift+Tab cycles: normal → auto-accept edits → plan → normal</text>
+  <text x="350" y="242" text-anchor="middle" class="dgm-text-small">Bypass Permissions is invoked separately (--dangerously-skip-permissions)</text>
+  <text x="350" y="260" text-anchor="middle" class="dgm-text-small">Auto mode (March 2026) is a Sonnet 4.6 classifier: auto-approves safe, blocks dangerous</text>
+  <text x="350" y="278" text-anchor="middle" class="dgm-text-small">Pre-approve boring commands in settings.json allow list</text>
+</svg>
+<figcaption>Mode decision tree. Plan is read-only, not zero-tool.</figcaption>
+</figure>
+
+<h3>The four modes (plus the new fifth)</h3>
+<ul>
+  <li><strong>Default.</strong> Claude asks for permission before any tool that writes, edits, or executes. You approve or deny each one. Most conservative.</li>
+  <li><strong>Accept Edits.</strong> Auto-approves file edits and common filesystem Bash (<code>mkdir</code>, <code>touch</code>, <code>rm</code>, <code>mv</code>, <code>cp</code>, <code>sed</code>). Review via git diff after the fact.</li>
+  <li><strong>Plan.</strong> Claude <em>researches and proposes</em>, reads files, runs read-only shell commands, writes a plan, but does not edit. <strong>Read-only, not no-tools.</strong></li>
+  <li><strong>Bypass Permissions.</strong> All permission checks off. Every tool call runs immediately. Only use in disposable sandboxes. Invoked with the <code>--dangerously-skip-permissions</code> flag.</li>
+  <li><strong>Auto mode</strong> (released March 2026). A safer alternative to Bypass. A Sonnet-4.6 classifier evaluates each tool call for risk, auto-approves safe ones, blocks or prompts on dangerous ones (mass delete, data exfil, weird network calls).</li>
+</ul>
+
+<div class="callout confuse"><strong>Common confusion</strong><p>Plan mode is often described as "it can't do anything." Wrong, it can read files, list directories, run read-only shell commands, do web searches. What it can't do is mutate (Edit, Write, destructive Bash). Perfect for "figure out how this works before touching it."</p></div>
+
+<figure>
+<svg viewBox="0 0 700 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Permission spectrum across the five modes">
+  <defs>
+    <linearGradient id="modegrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#4a7a4a"/>
+      <stop offset="50%" stop-color="#e8a838"/>
+      <stop offset="100%" stop-color="#c8542b"/>
+    </linearGradient>
+  </defs>
+  <text x="350" y="28" text-anchor="middle" font-family="system-ui" font-size="13" font-weight="600">How much Claude can do without asking you</text>
+  <rect x="40" y="50" width="620" height="14" rx="7" fill="url(#modegrad)" opacity="0.25"/>
+  <rect x="40" y="50" width="620" height="14" rx="7" fill="none" stroke="#aaa" stroke-width="1"/>
+  <text x="40" y="82" font-family="system-ui" font-size="11" fill="#4a7a4a" font-weight="600">SAFEST</text>
+  <text x="660" y="82" font-family="system-ui" font-size="11" fill="#c8542b" font-weight="600" text-anchor="end">RISKIEST</text>
+
+  <!-- 5 modes positioned along the spectrum -->
+  <g font-family="system-ui">
+    <!-- Plan -->
+    <line x1="100" y1="44" x2="100" y2="70" stroke="#333" stroke-width="2"/>
+    <rect x="50" y="100" width="120" height="62" rx="6" fill="#eef4ec" stroke="#4a7a4a" stroke-width="1.2"/>
+    <text x="110" y="120" text-anchor="middle" font-size="13" font-weight="700">Plan</text>
+    <text x="110" y="138" text-anchor="middle" font-size="10" fill="#555">read-only</text>
+    <text x="110" y="152" text-anchor="middle" font-size="10" fill="#555">explores, no mutate</text>
+
+    <!-- Default -->
+    <line x1="240" y1="44" x2="240" y2="70" stroke="#333" stroke-width="2"/>
+    <rect x="180" y="100" width="120" height="62" rx="6" fill="white" stroke="#888" stroke-width="1.2"/>
+    <text x="240" y="120" text-anchor="middle" font-size="13" font-weight="700">Default</text>
+    <text x="240" y="138" text-anchor="middle" font-size="10" fill="#555">asks every</text>
+    <text x="240" y="152" text-anchor="middle" font-size="10" fill="#555">mutating tool</text>
+
+    <!-- Accept Edits -->
+    <line x1="380" y1="44" x2="380" y2="70" stroke="#333" stroke-width="2"/>
+    <rect x="320" y="100" width="120" height="62" rx="6" fill="#fff6e6" stroke="#e8a838" stroke-width="1.2"/>
+    <text x="380" y="120" text-anchor="middle" font-size="13" font-weight="700">Accept Edits</text>
+    <text x="380" y="138" text-anchor="middle" font-size="10" fill="#555">auto edits +</text>
+    <text x="380" y="152" text-anchor="middle" font-size="10" fill="#555">safe Bash</text>
+
+    <!-- Auto -->
+    <line x1="520" y1="44" x2="520" y2="70" stroke="#333" stroke-width="2"/>
+    <rect x="460" y="100" width="120" height="62" rx="6" fill="#fbece3" stroke="#c8542b" stroke-width="1.2"/>
+    <text x="520" y="120" text-anchor="middle" font-size="13" font-weight="700">Auto</text>
+    <text x="520" y="138" text-anchor="middle" font-size="10" fill="#555">classifier picks;</text>
+    <text x="520" y="152" text-anchor="middle" font-size="10" fill="#555">blocks dangerous</text>
+
+    <!-- Bypass -->
+    <line x1="640" y1="44" x2="640" y2="70" stroke="#c8542b" stroke-width="2"/>
+    <rect x="590" y="100" width="60" height="62" rx="6" fill="#c8542b"/>
+    <text x="620" y="120" text-anchor="middle" font-size="12" font-weight="700" fill="white">Bypass</text>
+    <text x="620" y="138" text-anchor="middle" font-size="9" fill="white">all checks</text>
+    <text x="620" y="150" text-anchor="middle" font-size="9" fill="white">OFF</text>
+
+    <!-- Shift+Tab note -->
+    <rect x="40" y="200" width="620" height="60" rx="6" fill="#f7f3ec" stroke="#c8542b" stroke-width="1"/>
+    <text x="60" y="222" font-size="12" font-weight="600">Shift+Tab cycles in the terminal:</text>
+    <text x="60" y="240" font-size="11" fill="#444">Default → Accept Edits → Plan → Default. Auto and Bypass are opt-in (separate command/flag).</text>
+    <text x="60" y="254" font-size="11" fill="#444" font-style="italic">Pre-approve boring commands in <tspan font-family="ui-monospace" font-size="10.5">.claude/settings.json</tspan> so you're not tab-tab-tabbing through them.</text>
+  </g>
+</svg>
+<figcaption>The five modes laid out by how much they let Claude do unprompted. Pick the leftmost mode that still lets you make progress.</figcaption>
+</figure>
+
+<h3>Shift+Tab cycling</h3>
+<p>In the terminal, Shift+Tab cycles through: <strong>normal → auto-accept edits → plan → normal.</strong> Auto mode and Bypass are invoked separately. You flip mid-session freely.</p>
+
+<h3>Allow / deny lists in <code>settings.json</code></h3>
+<p>Beyond modes, you can permanently allow or deny specific tool patterns in <code>.claude/settings.json</code> (project) or <code>~/.claude/settings.json</code> (user):</p>
+<pre><code>{
+  "permissions": {
+    "allow": ["Bash(pnpm test*)", "Bash(pnpm lint*)", "Read(*)"],
+    "deny": ["Bash(rm -rf *)", "Bash(git push*)"]
+  }
+}</code></pre>
+<p>Use this to pre-approve the boring stuff (tests, lints, typechecks) so you're not tab-tab-tab'ing through them all day, and to hard-block the things you never want Claude to do unprompted.</p>
+
+<!-- PART 5 -->
+<h2 id="p5"><span class="part-num">Part 5</span>Plugins, connectors, and how it all fits</h2>
+
+<figure>
+<svg viewBox="0 0 700 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Plugin and connector relationship">
+  <rect x="250" y="20" width="200" height="52" rx="8" class="dgm-box-accent"/>
+  <text x="350" y="44" text-anchor="middle" class="dgm-label" style="font-size:14px;">Plugin</text>
+  <text x="350" y="62" text-anchor="middle" class="dgm-text-small">a bundle you install</text>
+  <path d="M 310 75 L 180 118" class="dgm-arrow"/>
+  <path d="M 335 75 L 300 118" class="dgm-arrow"/>
+  <path d="M 365 75 L 420 118" class="dgm-arrow"/>
+  <path d="M 390 75 L 540 118" class="dgm-arrow"/>
+  <rect x="40" y="120" width="180" height="52" rx="6" class="dgm-box"/>
+  <text x="130" y="144" text-anchor="middle" class="dgm-label">Skills</text>
+  <text x="130" y="162" text-anchor="middle" class="dgm-text-small">instructions + scripts</text>
+  <rect x="240" y="120" width="180" height="52" rx="6" class="dgm-box"/>
+  <text x="330" y="144" text-anchor="middle" class="dgm-label">MCP servers</text>
+  <text x="330" y="162" text-anchor="middle" class="dgm-text-small">tools to external services</text>
+  <rect x="440" y="120" width="180" height="52" rx="6" class="dgm-box"/>
+  <text x="530" y="144" text-anchor="middle" class="dgm-label">Agents / hooks / commands</text>
+  <text x="530" y="162" text-anchor="middle" class="dgm-text-small">automation + UI</text>
+  <rect x="240" y="210" width="180" height="42" rx="6" class="dgm-box-accent"/>
+  <text x="330" y="236" text-anchor="middle" class="dgm-label">Connector (Cowork term)</text>
+  <path d="M 330 172 L 330 208" class="dgm-arrow"/>
+  <text x="350" y="280" text-anchor="middle" class="dgm-text-small">In Cowork, "connector" = an MCP-backed integration you authorize</text>
+  <text x="350" y="296" text-anchor="middle" class="dgm-text-small">(Gmail, Calendar, Linear, Notion, Salesforce, Clay…)</text>
+</svg>
+<figcaption>Plugin anatomy. A connector in Cowork is just an MCP server with OAuth wrapped around it.</figcaption>
+</figure>
+
+<h3>Plugin anatomy</h3>
+<p>A plugin is a bundle. It can contain: skills (0..n), sub-agents (0..n), MCP server definitions (0..n, pre-configured), slash commands (0..n), hooks (0..n). One install gives you all of them.</p>
+<p>Example: a <code>python-development</code> plugin might ship 16 skills, 3 sub-agents, and a linting hook, available with one <code>/plugin install</code> command.</p>
+
+<h3>Anthropic-approved plugins: trust signals</h3>
+<ul>
+  <li>Published by Anthropic or a known integration partner.</li>
+  <li>Source code on GitHub, recent commits, issues being answered.</li>
+  <li>Clear documentation about what it reads/writes and what permissions it needs.</li>
+  <li>No post-install steps that download opaque binaries.</li>
+</ul>
+<p>Quality in community marketplaces varies wildly. Apply the same red/yellow/green check you'd use for a random npm package.</p>
+
+<h3>Plugin vs connector vs skill</h3>
+<p>These three get muddled, especially in Cowork conversations.</p>
+<ul>
+  <li><strong>Skill:</strong> instructions + optional scripts. Teaches Claude <em>how</em> to do a thing.</li>
+  <li><strong>MCP server:</strong> a process exposing tools. Gives Claude the <em>ability</em> to do a thing.</li>
+  <li><strong>Connector:</strong> Cowork's user-facing name for an MCP-backed integration to a specific service. You "connect" your account; under the hood it's an MCP.</li>
+  <li><strong>Plugin:</strong> a package bundling any combination of skills, MCP servers, agents, hooks, commands.</li>
+</ul>
+
+<h3>Feature matrix: MCPs vs connectors vs plugins</h3>
+<p>If you squint, these three overlap. The matrix below spells out what each one actually <em>does</em>, so you can pick the right one without guessing. A connector is an MCP with OAuth and a friendly UI; a plugin is a bundle that <em>may or may not</em> include an MCP, plus other things an MCP can't carry on its own.</p>
+
+<table class="compare-tbl">
+<thead>
+<tr><th>Feature / capability</th><th>MCP</th><th>Connector</th><th>Plugin</th></tr>
+</thead>
+<tbody>
+<tr>
+  <td>Gives Claude new tools to call (functions it can invoke)</td>
+  <td><span class="yes">✓</span></td>
+  <td><span class="yes">✓</span></td>
+  <td><span class="partial">◐</span><span class="note">only if the plugin bundles an MCP</span></td>
+</tr>
+<tr>
+  <td>Teaches Claude judgment (how and when to do things)</td>
+  <td><span class="no">-</span></td>
+  <td><span class="no">-</span></td>
+  <td><span class="yes">✓</span><span class="note">via bundled skills</span></td>
+</tr>
+<tr>
+  <td>Can carry hooks (lifecycle automation, auto-format, block dangerous commands, etc.)</td>
+  <td><span class="no">-</span></td>
+  <td><span class="no">-</span></td>
+  <td><span class="yes">✓</span></td>
+</tr>
+<tr>
+  <td>Can carry named sub-agents (specialized reviewers, researchers, etc.)</td>
+  <td><span class="no">-</span></td>
+  <td><span class="no">-</span></td>
+  <td><span class="yes">✓</span></td>
+</tr>
+<tr>
+  <td>Can carry slash commands (<code>/review</code>, <code>/security-review</code>, etc.)</td>
+  <td><span class="no">-</span></td>
+  <td><span class="no">-</span></td>
+  <td><span class="yes">✓</span></td>
+</tr>
+<tr>
+  <td>Wraps one specific external service (Gmail, Linear, Snowflake…)</td>
+  <td><span class="partial">◐</span><span class="note">typical, but not required</span></td>
+  <td><span class="yes">✓</span></td>
+  <td><span class="partial">◐</span><span class="note">can be generic or span many services</span></td>
+</tr>
+<tr>
+  <td>One-click install with managed OAuth / login flow</td>
+  <td><span class="no">-</span><span class="note">usually API keys via config</span></td>
+  <td><span class="yes">✓</span></td>
+  <td><span class="partial">◐</span><span class="note">plugin installs easily; any bundled auth still needed</span></td>
+</tr>
+<tr>
+  <td>You can build and distribute your own</td>
+  <td><span class="yes">✓</span><span class="note">via the Agent SDK</span></td>
+  <td><span class="no">-</span><span class="note">connector catalog is curated</span></td>
+  <td><span class="yes">✓</span><span class="note">any GitHub repo with a marketplace.json</span></td>
+</tr>
+<tr>
+  <td>Shared across a team via repo config</td>
+  <td><span class="yes">✓</span><span class="note">.mcp.json committed to git</span></td>
+  <td><span class="partial">◐</span><span class="note">listing travels; each user authorizes their own account</span></td>
+  <td><span class="yes">✓</span></td>
+</tr>
+<tr>
+  <td>Works in Claude Code</td>
+  <td><span class="yes">✓</span></td>
+  <td><span class="yes">✓</span><span class="note">growing support</span></td>
+  <td><span class="yes">✓</span></td>
+</tr>
+<tr>
+  <td>Works in Cowork</td>
+  <td><span class="yes">✓</span></td>
+  <td><span class="yes">✓</span><span class="note">native UX</span></td>
+  <td><span class="yes">✓</span></td>
+</tr>
+<tr>
+  <td>Distributed via a curated / vetted catalog</td>
+  <td><span class="partial">◐</span><span class="note">official directory + community servers</span></td>
+  <td><span class="yes">✓</span><span class="note">Anthropic-curated</span></td>
+  <td><span class="yes">✓</span><span class="note">official + community marketplaces</span></td>
+</tr>
+<tr>
+  <td>Costs tokens at session start (tool schemas load up-front)</td>
+  <td><span class="yes">✓</span></td>
+  <td><span class="yes">✓</span><span class="note">it is an MCP under the hood</span></td>
+  <td><span class="partial">◐</span><span class="note">only the MCPs it bundles cost schema tokens</span></td>
+</tr>
+</tbody>
+</table>
+<p class="legend"><strong>Legend:</strong> <span class="yes">✓</span> does this &nbsp;·&nbsp; <span class="partial">◐</span> partial or conditional &nbsp;·&nbsp; <span class="no">-</span> does not do this</p>
+
+<div class="callout tip"><strong>When to pick which</strong>
+<ul>
+  <li><strong>Wiring up one external service, simplest path?</strong> Reach for a <em>connector</em> if one exists. OAuth is handled; it's one click.</li>
+  <li><strong>Service isn't in the connector catalog?</strong> Reach for an <em>MCP</em>. Use an existing one from the community, or build your own with the SDK.</li>
+  <li><strong>Want tools + instructions + automation + commands as one unit?</strong> Reach for a <em>plugin</em>. It's the only one of the three that can carry skills and hooks.</li>
+  <li><strong>Proprietary internal system for your team?</strong> Build an <em>MCP</em>, optionally bundled inside a private plugin.</li>
+  <li><strong>You're a team and want to share your whole setup in one shot?</strong> Reach for a <em>plugin</em>. Everyone installs one thing and gets the same skills, MCP configs, hooks.</li>
+</ul>
+</div>
+
+<h3>Scope layer cake</h3>
+<figure>
+<svg viewBox="0 0 700 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Scope layer cake">
+  <rect x="100" y="40" width="500" height="60" rx="6" fill="#f0e8d4" stroke="#b49a5a" stroke-width="1.2"/>
+  <text x="120" y="70" class="dgm-label">User (global)</text>
+  <text x="120" y="88" class="dgm-text-small">~/.claude/   •   personal skills, default MCPs, preferences</text>
+  <rect x="100" y="110" width="500" height="60" rx="6" fill="#e7dfb8" stroke="#b49a5a" stroke-width="1.2"/>
+  <text x="120" y="140" class="dgm-label">Project</text>
+  <text x="120" y="158" class="dgm-text-small">&lt;repo&gt;/.claude/   •   shared with team (committed to git)</text>
+  <rect x="100" y="180" width="500" height="60" rx="6" fill="#ddd59a" stroke="#b49a5a" stroke-width="1.2"/>
+  <text x="120" y="210" class="dgm-label">Local</text>
+  <text x="120" y="228" class="dgm-text-small">CLAUDE.local.md, personal settings overrides (gitignored)</text>
+  <text x="350" y="260" text-anchor="middle" class="dgm-text-small" font-style="italic">Precedence flows down: local beats project beats user. Collections merge; singletons override.</text>
+</svg>
+<figcaption>Scope layer cake. Skills, settings, MCPs, nearly everything uses this three-tier model.</figcaption>
+</figure>
+
+<table>
+<thead><tr><th>User scope</th><th>Project scope</th><th>Local</th></tr></thead>
+<tbody>
+<tr>
+  <td>Personal skills (writing style, etc.)<br>Preferences<br>MCPs for personal accounts<br>Default theme / shortcuts</td>
+  <td><code>.mcp.json</code>, team MCPs<br><code>.claude/agents/</code>, team sub-agents<br>Project skills (<code>.claude/skills/</code>)<br>Allow/deny lists</td>
+  <td>Personal API keys (in env)<br>Machine paths<br>Toggles you don't want in git<br><code>CLAUDE.local.md</code></td>
+</tr>
+</tbody>
+</table>
+
+<h3>Sharing skills across projects</h3>
+<ol>
+  <li><strong>Symlink from user scope.</strong> One canonical copy; symlink into each project.</li>
+  <li><strong>Plugin.</strong> If skills travel together, bundle them as a plugin in a GitHub repo.</li>
+  <li><strong>Copy-paste.</strong> Fine for small, diverging skills.</li>
+</ol>
+<p>For teams, plugins win, everyone installs the same version, updates roll out together.</p>
+
+<!-- PART 6 -->
+<h2 id="p6"><span class="part-num">Part 6</span>Hooks</h2>
+<p>Hooks are <strong>shell commands that fire at specific points in Claude Code's lifecycle</strong>. They're how you make behavior deterministic, force formatting, block dangerous commands, inject context, log activity, send notifications.</p>
+
+<figure>
+<svg viewBox="0 0 700 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Hook lifecycle">
+  <rect x="20" y="20" width="200" height="280" rx="8" class="dgm-box-muted"/>
+  <text x="120" y="42" text-anchor="middle" class="dgm-label">Once per session</text>
+  <rect x="40" y="60" width="160" height="32" rx="4" class="dgm-box"/>
+  <text x="120" y="80" text-anchor="middle" class="dgm-text">SessionStart</text>
+  <rect x="40" y="100" width="160" height="32" rx="4" class="dgm-box"/>
+  <text x="120" y="120" text-anchor="middle" class="dgm-text">SessionEnd</text>
+  <rect x="40" y="220" width="160" height="32" rx="4" class="dgm-box"/>
+  <text x="120" y="240" text-anchor="middle" class="dgm-text">PreCompact</text>
+  <rect x="240" y="20" width="200" height="280" rx="8" class="dgm-box-muted"/>
+  <text x="340" y="42" text-anchor="middle" class="dgm-label">Once per turn</text>
+  <rect x="260" y="60" width="160" height="32" rx="4" class="dgm-box"/>
+  <text x="340" y="80" text-anchor="middle" class="dgm-text">UserPromptSubmit</text>
+  <rect x="260" y="100" width="160" height="32" rx="4" class="dgm-box"/>
+  <text x="340" y="120" text-anchor="middle" class="dgm-text">Stop</text>
+  <rect x="260" y="140" width="160" height="32" rx="4" class="dgm-box"/>
+  <text x="340" y="160" text-anchor="middle" class="dgm-text">StopFailure</text>
+  <rect x="260" y="180" width="160" height="32" rx="4" class="dgm-box"/>
+  <text x="340" y="200" text-anchor="middle" class="dgm-text">SubagentStop</text>
+  <rect x="260" y="220" width="160" height="32" rx="4" class="dgm-box"/>
+  <text x="340" y="240" text-anchor="middle" class="dgm-text">Notification</text>
+  <rect x="460" y="20" width="220" height="280" rx="8" class="dgm-box-muted"/>
+  <text x="570" y="42" text-anchor="middle" class="dgm-label">Every tool call</text>
+  <rect x="480" y="60" width="180" height="36" rx="4" class="dgm-box-accent"/>
+  <text x="570" y="82" text-anchor="middle" class="dgm-text">PreToolUse</text>
+  <text x="570" y="92" text-anchor="middle" class="dgm-text-small">(can block!)</text>
+  <rect x="480" y="110" width="180" height="36" rx="4" class="dgm-box-accent"/>
+  <text x="570" y="132" text-anchor="middle" class="dgm-text">PostToolUse</text>
+  <text x="570" y="142" text-anchor="middle" class="dgm-text-small">(can add context)</text>
+</svg>
+<figcaption>Hook events grouped by cadence. Exact names and additions shift between versions, verify for yours.</figcaption>
+</figure>
+
+<figure>
+<svg viewBox="0 0 700 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Hook events on a session timeline">
+  <text x="350" y="28" text-anchor="middle" font-family="system-ui" font-size="13" font-weight="600">When each hook actually fires (one example session)</text>
+  <!-- Timeline bar -->
+  <line x1="40" y1="80" x2="660" y2="80" stroke="#999" stroke-width="2"/>
+  <line x1="40" y1="74" x2="40" y2="86" stroke="#999" stroke-width="2"/>
+  <line x1="660" y1="74" x2="660" y2="86" stroke="#999" stroke-width="2"/>
+  <text x="40" y="100" font-family="system-ui" font-size="10" fill="#666">session start</text>
+  <text x="660" y="100" font-family="system-ui" font-size="10" fill="#666" text-anchor="end">session end</text>
+
+  <g font-family="system-ui">
+    <!-- SessionStart -->
+    <circle cx="60" cy="80" r="6" fill="#c8542b"/>
+    <line x1="60" y1="74" x2="60" y2="130" stroke="#c8542b" stroke-width="1" stroke-dasharray="2 2"/>
+    <text x="60" y="145" text-anchor="middle" font-size="10" font-weight="600" fill="#c8542b">SessionStart</text>
+
+    <!-- UserPromptSubmit (turn 1) -->
+    <circle cx="140" cy="80" r="5" fill="#4a7a4a"/>
+    <line x1="140" y1="74" x2="140" y2="160" stroke="#4a7a4a" stroke-width="1" stroke-dasharray="2 2"/>
+    <text x="140" y="175" text-anchor="middle" font-size="10" font-weight="600" fill="#4a7a4a">UserPromptSubmit</text>
+    <text x="140" y="187" text-anchor="middle" font-size="9" fill="#666" font-style="italic">turn 1</text>
+
+    <!-- PreToolUse 1 + PostToolUse 1 -->
+    <circle cx="200" cy="80" r="4" fill="#7a4a9a"/>
+    <line x1="200" y1="74" x2="200" y2="125" stroke="#7a4a9a" stroke-width="1" stroke-dasharray="2 2"/>
+    <text x="200" y="140" text-anchor="middle" font-size="9" font-weight="600" fill="#7a4a9a">PreToolUse</text>
+
+    <circle cx="225" cy="80" r="4" fill="#7a4a9a"/>
+    <line x1="225" y1="74" x2="225" y2="115" stroke="#7a4a9a" stroke-width="1" stroke-dasharray="2 2"/>
+    <text x="225" y="200" text-anchor="middle" font-size="9" font-weight="600" fill="#7a4a9a">PostToolUse</text>
+
+    <!-- More tool uses -->
+    <circle cx="260" cy="80" r="3" fill="#7a4a9a" opacity="0.6"/>
+    <circle cx="280" cy="80" r="3" fill="#7a4a9a" opacity="0.6"/>
+    <circle cx="300" cy="80" r="3" fill="#7a4a9a" opacity="0.6"/>
+    <text x="280" y="60" text-anchor="middle" font-size="9" fill="#666" font-style="italic">…more Pre/Post per tool…</text>
+
+    <!-- Stop (turn 1) -->
+    <circle cx="340" cy="80" r="5" fill="#4a7a4a"/>
+    <line x1="340" y1="74" x2="340" y2="160" stroke="#4a7a4a" stroke-width="1" stroke-dasharray="2 2"/>
+    <text x="340" y="175" text-anchor="middle" font-size="10" font-weight="600" fill="#4a7a4a">Stop</text>
+    <text x="340" y="187" text-anchor="middle" font-size="9" fill="#666" font-style="italic">turn 1 done</text>
+
+    <!-- Turn 2 short version -->
+    <circle cx="420" cy="80" r="5" fill="#4a7a4a"/>
+    <text x="420" y="60" text-anchor="middle" font-size="9" fill="#4a7a4a">Prompt</text>
+    <circle cx="450" cy="80" r="3" fill="#7a4a9a" opacity="0.7"/>
+    <circle cx="465" cy="80" r="3" fill="#7a4a9a" opacity="0.7"/>
+    <circle cx="490" cy="80" r="5" fill="#4a7a4a"/>
+    <text x="490" y="60" text-anchor="middle" font-size="9" fill="#4a7a4a">Stop</text>
+    <text x="455" y="105" text-anchor="middle" font-size="9" fill="#666" font-style="italic">turn 2</text>
+
+    <!-- PreCompact -->
+    <circle cx="560" cy="80" r="5" fill="#e8a838"/>
+    <line x1="560" y1="74" x2="560" y2="125" stroke="#e8a838" stroke-width="1" stroke-dasharray="2 2"/>
+    <text x="560" y="140" text-anchor="middle" font-size="10" font-weight="600" fill="#a07020">PreCompact</text>
+    <text x="560" y="152" text-anchor="middle" font-size="9" fill="#666" font-style="italic">context full</text>
+
+    <!-- SessionEnd -->
+    <circle cx="640" cy="80" r="6" fill="#c8542b"/>
+    <line x1="640" y1="74" x2="640" y2="125" stroke="#c8542b" stroke-width="1" stroke-dasharray="2 2"/>
+    <text x="640" y="140" text-anchor="middle" font-size="10" font-weight="600" fill="#c8542b">SessionEnd</text>
+
+    <!-- Legend -->
+    <g transform="translate(40, 230)">
+      <circle cx="6" cy="6" r="5" fill="#c8542b"/>
+      <text x="18" y="10" font-size="11" fill="#444">session boundary</text>
+      <circle cx="160" cy="6" r="5" fill="#4a7a4a"/>
+      <text x="172" y="10" font-size="11" fill="#444">turn boundary</text>
+      <circle cx="290" cy="6" r="5" fill="#7a4a9a"/>
+      <text x="302" y="10" font-size="11" fill="#444">tool boundary</text>
+      <circle cx="410" cy="6" r="5" fill="#e8a838"/>
+      <text x="422" y="10" font-size="11" fill="#444">context-management</text>
+    </g>
+    <text x="40" y="265" font-size="11" fill="#666" font-style="italic">Read left-to-right: a session has many turns; each turn has many tool calls; PreCompact fires when context fills up.</text>
+  </g>
+</svg>
+<figcaption>Same events, but plotted on an actual session timeline. The cadence groups in the previous figure tell you "how often"; this one shows "when, in order."</figcaption>
+</figure>
+
+<h3>Exit-code semantics</h3>
+<ul>
+  <li><strong>Exit 0:</strong> allow, carry on. Stdout can be added to context where supported.</li>
+  <li><strong>Exit 2:</strong> block. On <code>PreToolUse</code>, blocks the tool. On <code>UserPromptSubmit</code>, blocks the message.</li>
+  <li><strong>Other non-zero:</strong> error, logged; Claude continues.</li>
+</ul>
+
+<h3>Three killer examples</h3>
+<h4>1. Auto-format on save</h4>
+<pre><code>// .claude/settings.json
+{
+  "hooks": {
+    "PostToolUse": [{
+      "matcher": "Write|Edit",
+      "hooks": [{"type": "command", "command": "prettier --write $CLAUDE_TOOL_INPUT_FILE_PATH"}]
+    }]
+  }
+}</code></pre>
+
+<h4>2. Block dangerous SQL in a data project</h4>
+<pre><code>{
+  "hooks": {
+    "PreToolUse": [{
+      "matcher": "Bash",
+      "hooks": [{"type": "command", "command": "scripts/sql-safety.sh"}]
+    }]
+  }
+}</code></pre>
+<p>Where <code>sql-safety.sh</code> inspects the command and exits 2 if it sees <code>DROP|DELETE|UPDATE</code> outside allowlisted scratch schemas.</p>
+
+<h4>3. Re-inject critical context on compaction</h4>
+<pre><code>{
+  "hooks": {
+    "PreCompact": [{
+      "hooks": [{"type": "command", "command": "cat docs/invariants.md"}]
+    }]
+  }
+}</code></pre>
+<p>Whatever the hook prints to stdout is added back into context, so your project invariants survive compaction.</p>
+
+<div class="callout warn"><strong>Security</strong><p>Hooks run with your shell privileges. A compromised or malicious hook can do anything you can do from the terminal: delete files, send secrets, install software. Review every hook you install. Pin versions. Don't pull hook scripts from random gists.</p></div>
+
+<!-- PART 7 -->
+<h2 id="p7"><span class="part-num">Part 7</span>The Claude Agent SDK</h2>
+<p>The <strong>Claude Agent SDK</strong> is Anthropic's framework for building your own agents on top of the same loop Claude Code uses. The SDK was effectively <strong>extracted from Claude Code's internals</strong>, they share the agent loop, tool-use semantics, MCP support. Claude Code is, in a sense, one application built on the SDK; you can build others.</p>
+
+<h3>When to reach for the SDK</h3>
+<ul>
+  <li>You want to build a <strong>custom agent</strong> and ship it to users (your own product, an internal tool).</li>
+  <li>You want an agent running as a <strong>scheduled job</strong> or service, not a human-driven session.</li>
+  <li>You want to <strong>build an MCP server</strong>, the SDK tooling makes this straightforward.</li>
+  <li>You want the Claude Code experience embedded in your own app.</li>
+</ul>
+<p>If you just want to use Claude to do work for yourself, you don't need the SDK. Claude Code and Cowork already wrap it.</p>
+
+<h3>Minimal example (conceptual)</h3>
+<pre><code>from anthropic.agent import Agent
+
+agent = Agent(
+    system="You are a release-notes writer. ...",
+    tools=[read_commits_tool, write_file_tool],
+)
+result = agent.run("Draft release notes for v1.4 from the last 20 commits.")
+print(result.messages[-1].content)</code></pre>
+<p>Under the hood: same loop as Claude Code. Prompt → think → tool → result → repeat.</p>
+
+<h3>Connection to MCP</h3>
+<p>An MCP server is, in practice, a small program that exposes typed tools. The SDK ships helpers for building and hosting one. Most "we connected a new internal system to Claude" stories at companies end up being: write an MCP server with the SDK, deploy it, add it to <code>.mcp.json</code>.</p>
+
+<!-- PART 8 -->
+<h2 id="p8"><span class="part-num">Part 8</span>Tokens and context, in depth</h2>
+<p>Everything in this part boils down to: <strong>tokens are scarce; plan accordingly.</strong></p>
+
+<figure>
+<svg viewBox="0 0 700 380" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Context window anatomy">
+  <rect x="100" y="20" width="500" height="340" fill="white" stroke="#333" stroke-width="1.5" rx="4"/>
+  <text x="350" y="14" text-anchor="middle" class="dgm-label">Context window (finite)</text>
+  <rect x="100" y="20" width="500" height="32" fill="#f7eddc"/>
+  <text x="115" y="40" class="dgm-text">System prompt (Anthropic's)</text>
+  <text x="585" y="40" text-anchor="end" class="dgm-text-small">~2k · every turn</text>
+  <rect x="100" y="52" width="500" height="42" fill="#fbece3"/>
+  <text x="115" y="68" class="dgm-text">CLAUDE.md + imports</text>
+  <text x="585" y="68" text-anchor="end" class="dgm-text-small">1-10k · every turn</text>
+  <text x="115" y="84" class="dgm-text-small">The durable project brain</text>
+  <rect x="100" y="94" width="500" height="42" fill="#f5e8d1"/>
+  <text x="115" y="110" class="dgm-text">Skill names + descriptions</text>
+  <text x="585" y="110" text-anchor="end" class="dgm-text-small">0.5-5k · every turn</text>
+  <text x="115" y="126" class="dgm-text-small">Bodies only load when a skill fires</text>
+  <rect x="100" y="136" width="500" height="48" fill="#f3ecf6"/>
+  <text x="115" y="152" class="dgm-text">MCP tool schemas</text>
+  <text x="585" y="152" text-anchor="end" class="dgm-text-small">2-20k · at session start</text>
+  <text x="115" y="170" class="dgm-text-small">The sneaky one. A 40-tool MCP = 5-10k tokens before you type.</text>
+  <rect x="100" y="184" width="500" height="108" fill="#eef4ec"/>
+  <text x="115" y="202" class="dgm-text">Conversation so far</text>
+  <text x="585" y="202" text-anchor="end" class="dgm-text-small">grows unbounded</text>
+  <text x="115" y="220" class="dgm-text-small">User prompts, Claude replies, every tool result, every file read.</text>
+  <text x="115" y="238" class="dgm-text-small">Biggest long-term consumer. Nothing gets cleaned up</text>
+  <text x="115" y="256" class="dgm-text-small">until you /compact or /clear.</text>
+  <rect x="100" y="292" width="500" height="36" fill="#eaf1f5"/>
+  <text x="115" y="310" class="dgm-text">Sub-agent return messages</text>
+  <text x="585" y="310" text-anchor="end" class="dgm-text-small">1-5k each</text>
+  <rect x="100" y="328" width="500" height="32" fill="#fff6e6"/>
+  <text x="115" y="348" class="dgm-text">Active skill body (when fired)</text>
+  <text x="585" y="348" text-anchor="end" class="dgm-text-small">1-10k</text>
+</svg>
+<figcaption>Approximate context-window anatomy. Numbers illustrative, not authoritative.</figcaption>
+</figure>
+
+<div class="callout warn"><strong>The counterintuitive rule</strong><p>Once something enters context, it stays until you <code>/compact</code> or <code>/clear</code>. There is no automatic cleanup of the 3,000-line log file you told Claude to read in turn 4. It's still there in turn 40. This is why long sessions gradually slow down and lose focus.</p></div>
+
+<h3>When tokens are spent</h3>
+<table>
+<thead><tr><th>Cost</th><th>When</th></tr></thead>
+<tbody>
+<tr><td>System prompt</td><td>Every turn</td></tr>
+<tr><td><code>CLAUDE.md</code> + imports</td><td>Every turn</td></tr>
+<tr><td>Skill <em>descriptions</em></td><td>Every turn</td></tr>
+<tr><td>Skill <em>bodies</em></td><td>Only when invoked</td></tr>
+<tr><td>MCP <em>tool schemas</em></td><td>At session start (until Tool Search)</td></tr>
+<tr><td>MCP <em>tool results</em></td><td>When tools are called</td></tr>
+<tr><td>Files read</td><td>When read</td></tr>
+<tr><td>Sub-agent return messages</td><td>When a sub-agent finishes</td></tr>
+<tr><td>Conversation history</td><td>Every turn, cumulatively</td></tr>
+</tbody>
+</table>
+
+<h3>Degradation signals</h3>
+<p>Signs your context is overloaded:</p>
+<ul>
+  <li>Claude starts re-reading files it already read.</li>
+  <li>It contradicts something it knew earlier in the session.</li>
+  <li>Responses get repetitive or hedgy.</li>
+  <li>Tool calls become unfocused.</li>
+  <li>Simple tasks take surprisingly long.</li>
+</ul>
+<p>When you see these: <code>/compact</code>, <code>/clear</code>, or start a new session.</p>
+
+<h3><code>/clear</code> vs <code>/compact</code> vs new session</h3>
+<ul>
+  <li><strong><code>/clear</code></strong>, wipe the conversation, keep the project setup. Fast reset.</li>
+  <li><strong><code>/compact</code></strong>, summarize older turns into a brief, keep the summary, discard originals. Use when there's valuable context buried in a long session.</li>
+  <li><strong>New session</strong>, full restart. Use when starting a genuinely new task.</li>
+</ul>
+
+<h3>Heuristic thresholds (rules of thumb, not official)</h3>
+<ul>
+  <li><strong>~60% used</strong> → soft warning. Is everything in context still relevant?</li>
+  <li><strong>~80% used</strong> → hard warning. Compact or clear before the next big task.</li>
+  <li><strong>&gt;90% used</strong> → you're probably getting degraded output and paying the most per turn.</li>
+</ul>
+<div class="callout confuse"><strong>Common confusion</strong><p>These aren't Anthropic-published numbers. They're heuristics that match how most people experience the quality curve. Your mileage will vary by model and task.</p></div>
+
+<h3>Prompt caching basics</h3>
+<p>Anthropic's API supports prompt caching: stable prefixes (system prompt, <code>CLAUDE.md</code>, large reference docs) can be cached server-side so subsequent turns pay a small fraction of the token cost. Claude Code uses this automatically where it can. Implication for you: <strong>put stable context at the top</strong> (which <code>CLAUDE.md</code> naturally does) and avoid gratuitously editing it mid-session.</p>
+
+<!-- PART 9 -->
+<h2 id="p9"><span class="part-num">Part 9</span>Prompts vs project setup (demonstrated tradeoff)</h2>
+<p>Same task, two setups. Watch the tokens and the quality.</p>
+
+<h3>The task</h3>
+<blockquote>Write release notes for the v1.4 release based on recent git commits.</blockquote>
+
+<h3>Setup A: bare CLAUDE.md, detailed prompt</h3>
+<p><code>CLAUDE.md</code> is one line:</p>
+<pre><code>This is a web app.</code></pre>
+<p>Prompt:</p>
+<pre><code>Write release notes for v1.4. Get the commits from the last two weeks using
+`git log --since=2.weeks` and group them into: User-facing features,
+Bug fixes, Performance, and Internal/Chore. Write in the second person,
+upbeat but not breathless. Include a 'Thanks to' section listing unique
+contributors from the commits. Output as markdown suitable for our
+changelog page. Audience is end users, not engineers. Skip dependency
+bumps unless they're user-visible. Use past tense verbs. No emojis.</code></pre>
+<p>Tokens spent (rough): ~200 prompt + ~8,000 over the turn. Output quality: pretty good, you specified everything.</p>
+
+<h3>Setup B: rich CLAUDE.md, terse prompt</h3>
+<p><code>CLAUDE.md</code>:</p>
+<pre><code># Project
+Web app. Release notes live in `CHANGELOG.md`.
+
+## Release notes style
+- Audience: end users.
+- Second person, upbeat, not breathless, past tense, no emojis.
+- Group commits into: User-facing features, Bug fixes, Performance, Internal.
+- Skip dependency bumps unless user-visible.
+- 'Thanks to' section listing unique contributors.
+- Use `git log --since=2.weeks` to gather commits.</code></pre>
+<p>Prompt:</p>
+<pre><code>Release notes for v1.4.</code></pre>
+<p>Tokens spent (rough): ~50 prompt + the same ~8,000 over the turn. But <strong>also</strong> ~200 extra tokens in <code>CLAUDE.md</code> <em>every</em> turn of this session, not just this one.</p>
+<p>Output quality: identical. And next week, when you ask for v1.5, you type four words.</p>
+
+<h3>Heuristics</h3>
+<ul>
+  <li><strong>One-off, new territory?</strong> Put it in the prompt. Don't pollute <code>CLAUDE.md</code> with single-use stuff.</li>
+  <li><strong>You've written this twice?</strong> Move it to <code>CLAUDE.md</code> (or a skill).</li>
+  <li><strong>It's a reusable workflow?</strong> Consider a skill, body loads only when relevant.</li>
+  <li><strong>General capability tied to an external system?</strong> MCP.</li>
+</ul>
+<div class="callout tip"><strong>Rule of three</strong><p>The third time you write the same context into a prompt, you've earned the right (obligation) to move it up the stack.</p></div>
+
+<!-- PART 10 -->
+<h2 id="p10"><span class="part-num">Part 10</span>Cowork-specific mental model</h2>
+<p>Cowork shares the engine. It differs in surface and in a handful of concepts that don't exist in Claude Code.</p>
+
+<h3>How Cowork differs</h3>
+<ul>
+  <li><strong>Audience.</strong> Not engineer-primary. A PM, designer, marketer, or ops person can use it without ever touching a terminal.</li>
+  <li><strong>Surface.</strong> Desktop app + mobile. No terminal, no direct CLI. File tools and a sandboxed shell, wrapped in a chat-like UI.</li>
+  <li><strong>Connectors first.</strong> Cowork leans on MCP connectors (Gmail, Calendar, Drive, Linear, Notion, Slack, Salesforce, Clay, and the rest) as the primary way to reach your data.</li>
+  <li><strong>Plugins.</strong> Same mechanism as Claude Code; Cowork surfaces them differently (a plugin registry inside the app).</li>
+</ul>
+
+<h3>Artifacts vs files</h3>
+<ul>
+  <li><strong>File.</strong> Lives in a folder. Regular file. Static.</li>
+  <li><strong>Artifact.</strong> A <em>live</em> HTML view that opens in the Cowork sidebar, persists across sessions, and can re-fetch data from your connectors each time you open it. Think "a dashboard or tracker you'll come back to," not "a one-off explainer."</li>
+</ul>
+<div class="callout tip"><strong>Rule</strong><p>If the user will look at it again and the underlying data changes, artifact. If it's a static deliverable, file.</p></div>
+
+<h3>Uploads, outputs, workspace folder</h3>
+<ul>
+  <li><strong>Uploads.</strong> Files you attach to a message. Read-only; Claude can examine them.</li>
+  <li><strong>Outputs.</strong> The temporary scratchpad Claude writes to during a session. Users don't see these directly.</li>
+  <li><strong>Workspace folder.</strong> A real folder on your computer that you select. This is where final deliverables go so you can actually use them.</li>
+</ul>
+
+<h3>Scheduled tasks</h3>
+<p>Cowork supports running a prompt on a schedule, daily morning brief, weekly digest, "every Friday at 4pm, summarize unread Slack." The schedule lives in Cowork; execution is the same agent loop.</p>
+
+<h3>Memory: the cross-session brain</h3>
+<p><strong>Mental model in one line.</strong> Memory is a file-based scratchpad of things Claude should remember about <em>you</em> across sessions. <code>CLAUDE.md</code> is for things about <em>the project</em>. Skills are for things about <em>how to do tasks</em>. They don't compete; they cover different territory.</p>
+
+<h4>What memory actually is</h4>
+<p>In Cowork, "memory" is a directory of small Markdown files plus an index file (<code>MEMORY.md</code>) that lists what's in there. The directory lives in your user space (not in any one project), so Claude carries it from one Cowork session to the next, and from one project to another.</p>
+<p>Two layers, both file-based:</p>
+<ol>
+  <li><strong>Auto-memory.</strong> Cowork's built-in system, on by default. Files get written automatically when Claude learns something worth keeping (or when you say "remember this"). Each file is type-tagged: <code>user</code> (who you are), <code>feedback</code> (how you want to work), <code>project</code> (state of ongoing work), <code>reference</code> (where to look for things in external systems).</li>
+  <li><strong>Productivity-plugin memory.</strong> If you install the <code>productivity</code> plugin, you get a second tier on top: <code>CLAUDE.md</code> as fast working memory plus a <code>memory/</code> directory for the deeper knowledge base. Opt-in. Built for people who want a more deliberate task-and-context system.</li>
+</ol>
+<p>In Claude Code, the word "memory" isn't used the same way. The closest equivalents are <code>CLAUDE.md</code> and <code>CLAUDE.local.md</code> at the user or project level. If a Claude Code conversation says "save this to memory," it usually means append it to one of those files.</p>
+
+<h4>File structure</h4>
+<p>A typical auto-memory directory looks like this:</p>
+<pre><code>memory/
+├── MEMORY.md                    # the index (always loaded into context)
+├── user_role.md                 # who Michael is, what he does
+├── feedback_no_emdashes.md      # rule: never use em-dashes
+├── project_guide_watcher.md     # the daily watcher's setup and conventions
+└── reference_anthropic_docs.md  # where to find Anthropic's release notes</code></pre>
+<p><code>MEMORY.md</code> is just a list of one-line pointers, one per file:</p>
+<pre><code>- [User role](user_role.md). Michael is a Cowork user building reference content for himself.
+- [No em-dashes](feedback_no_emdashes.md). Never use em-dash or en-dash characters.
+- [Guide watcher](project_guide_watcher.md). Daily 9am scheduled task that watches Anthropic for guide-relevant news.
+- [Anthropic docs locations](reference_anthropic_docs.md). Where release notes, news, and the engineering blog live.</code></pre>
+<p>Each individual file has YAML frontmatter and a body:</p>
+<pre><code>---
+name: feedback_no_emdashes
+description: Hard rule, never use em-dashes or en-dashes anywhere
+type: feedback
+---
+
+Don't use the characters `—` (em-dash) or `–` (en-dash) anywhere.
+
+**Why:** Michael finds them visually noisy and asked me to ban
+them. They look like double hyphens.
+
+**How to apply:** When you'd reach for one, use a period, comma,
+colon, or parentheses instead. If a sentence reads awkwardly
+without one, rewrite the sentence.</code></pre>
+
+<figure>
+<svg viewBox="0 0 700 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="How memory loads: index every turn, bodies on demand">
+  <defs>
+    <marker id="arr-mem" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#333"/>
+    </marker>
+    <marker id="arr-mem-d" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#888"/>
+    </marker>
+  </defs>
+  <text x="350" y="26" text-anchor="middle" font-family="system-ui" font-size="13" font-weight="600">How memory loads into context</text>
+
+  <!-- Memory directory on left -->
+  <rect x="30" y="60" width="240" height="270" rx="8" fill="#fbece3" stroke="#c8542b" stroke-width="1.4"/>
+  <text x="150" y="84" text-anchor="middle" font-family="system-ui" font-size="13" font-weight="700" fill="#c8542b">memory/ directory</text>
+  <text x="150" y="100" text-anchor="middle" font-family="system-ui" font-size="10" fill="#888" font-style="italic">in your Cowork user space</text>
+
+  <!-- Index file -->
+  <rect x="50" y="120" width="200" height="46" rx="5" fill="white" stroke="#c8542b" stroke-width="2"/>
+  <text x="150" y="139" text-anchor="middle" font-family="system-ui" font-size="12" font-weight="700">MEMORY.md (the index)</text>
+  <text x="150" y="156" text-anchor="middle" font-family="system-ui" font-size="10" fill="#666">one-line pointer per file</text>
+
+  <!-- Memory files -->
+  <rect x="50" y="180" width="200" height="32" rx="4" fill="white" stroke="#bbb"/>
+  <text x="150" y="200" text-anchor="middle" font-family="system-ui" font-size="11">user_role.md</text>
+  <rect x="50" y="220" width="200" height="32" rx="4" fill="white" stroke="#bbb"/>
+  <text x="150" y="240" text-anchor="middle" font-family="system-ui" font-size="11">feedback_no_emdashes.md</text>
+  <rect x="50" y="260" width="200" height="32" rx="4" fill="white" stroke="#bbb"/>
+  <text x="150" y="280" text-anchor="middle" font-family="system-ui" font-size="11">project_guide_watcher.md</text>
+  <rect x="50" y="300" width="200" height="22" rx="4" fill="white" stroke="#bbb"/>
+  <text x="150" y="316" text-anchor="middle" font-family="system-ui" font-size="11" fill="#888" font-style="italic">…dozens more, fine</text>
+
+  <!-- Context window on right -->
+  <rect x="430" y="60" width="240" height="270" rx="8" fill="#eef4ec" stroke="#4a7a4a" stroke-width="1.4"/>
+  <text x="550" y="84" text-anchor="middle" font-family="system-ui" font-size="13" font-weight="700" fill="#4a7a4a">Context window</text>
+  <text x="550" y="100" text-anchor="middle" font-family="system-ui" font-size="10" fill="#888" font-style="italic">what Claude can see this turn</text>
+
+  <rect x="450" y="120" width="200" height="46" rx="5" fill="white" stroke="#4a7a4a" stroke-width="2"/>
+  <text x="550" y="139" text-anchor="middle" font-family="system-ui" font-size="12" font-weight="700">MEMORY.md (loaded)</text>
+  <text x="550" y="156" text-anchor="middle" font-family="system-ui" font-size="10" fill="#666">always, every turn</text>
+
+  <rect x="450" y="220" width="200" height="32" rx="4" fill="white" stroke="#4a7a4a" stroke-dasharray="4 3"/>
+  <text x="550" y="240" text-anchor="middle" font-family="system-ui" font-size="11">feedback_no_emdashes.md</text>
+  <text x="550" y="270" text-anchor="middle" font-family="system-ui" font-size="10" fill="#888" font-style="italic">pulled in only when</text>
+  <text x="550" y="284" text-anchor="middle" font-family="system-ui" font-size="10" fill="#888" font-style="italic">conversation matches</text>
+  <text x="550" y="298" text-anchor="middle" font-family="system-ui" font-size="10" fill="#888" font-style="italic">its index entry</text>
+
+  <!-- Arrows -->
+  <line x1="255" y1="143" x2="445" y2="143" stroke="#333" stroke-width="2" marker-end="url(#arr-mem)"/>
+  <text x="350" y="135" text-anchor="middle" font-family="system-ui" font-size="11" fill="#333" font-weight="600">always</text>
+
+  <line x1="255" y1="236" x2="445" y2="236" stroke="#888" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arr-mem-d)"/>
+  <text x="350" y="228" text-anchor="middle" font-family="system-ui" font-size="11" fill="#888" font-style="italic">on demand</text>
+
+  <text x="350" y="346" text-anchor="middle" font-family="system-ui" font-size="11" fill="#666" font-style="italic">Same progressive-disclosure trick skills use. The index is the front door; the files are rooms behind it.</text>
+</svg>
+<figcaption>Memory loading. The index pays a small cost every turn; individual files cost zero until something in the conversation matches their description.</figcaption>
+</figure>
+
+<h4>How memories get saved</h4>
+<p>Three triggers:</p>
+<ol>
+  <li><strong>You ask explicitly.</strong> "Remember that I prefer X." Claude writes it to memory immediately.</li>
+  <li><strong>Claude notices something worth saving.</strong> A correction you make ("don't do it that way"), a confirmed approach ("yes, that's exactly right"), a fact about ongoing work that won't change soon ("we use Snowflake, not BigQuery").</li>
+  <li><strong>You ask Claude to forget something.</strong> Claude finds the relevant entry and removes it.</li>
+</ol>
+<p>Claude is supposed to <em>not</em> save:</p>
+<ul>
+  <li>Code patterns, file paths, project structure. Those live in the code; reading the code is more reliable than recalling a stale memory.</li>
+  <li>Debug-fix recipes. The fix is in the code; the commit message has the context.</li>
+  <li>Ephemeral task state. That belongs in the current conversation or a <code>TASKS.md</code>, not memory.</li>
+  <li>Sensitive personal info (medical, financial, government IDs, home address) unless you explicitly ask for it.</li>
+</ul>
+
+<h4>How memories get invoked</h4>
+<p><code>MEMORY.md</code> (the index) is loaded into context <strong>every turn</strong>. So Claude always knows what memories <em>exist</em>, even before reading any of them.</p>
+<p>Individual memory files are loaded <strong>on demand</strong>, when their description in the index matches something in the current conversation. Ask about your daily watcher and Claude reads <code>project_guide_watcher.md</code>. Don't, and that file's contents stay on disk.</p>
+
+<h4>Token cost</h4>
+<p>Two costs, in two places:</p>
+<ul>
+  <li><strong><code>MEMORY.md</code></strong> loads every turn. Capped at roughly 200 lines, one-line entries each, so it costs maybe 1 to 3k tokens per turn (same neighborhood as a tight <code>CLAUDE.md</code>).</li>
+  <li><strong>Individual memory files</strong> load only when invoked. A file you wrote three months ago and haven't touched costs zero tokens until something in the current conversation matches its index entry.</li>
+</ul>
+<p>The practical consequence: don't worry about having "too many" memories, as long as the index entries are short and well-named. Worry about the index getting bloated.</p>
+
+<h4>Where memory stands relative to CLAUDE.md and skills</h4>
+<table class="compare-tbl">
+<thead><tr><th>Mechanism</th><th>Stores</th><th>Scope</th><th>Loads when</th><th>Best for</th></tr></thead>
+<tbody>
+<tr><td><strong>Memory</strong></td><td>Facts about you and your context</td><td>Cross-session, cross-project (your user space)</td><td>Index every turn; files on demand</td><td>Personal preferences, recurring projects, "remember this about me"</td></tr>
+<tr><td><strong><code>CLAUDE.md</code></strong></td><td>Facts about the project</td><td>One project (in the repo)</td><td>Every turn</td><td>"We use pnpm." "Tests live in <code>__tests__/</code>."</td></tr>
+<tr><td><strong><code>CLAUDE.local.md</code></strong></td><td>Same shape as CLAUDE.md, machine-only</td><td>One project, your machine</td><td>Every turn</td><td>API keys, machine paths, gitignored toggles</td></tr>
+<tr><td><strong>Skill</strong></td><td>Instructions for how to do a task</td><td>Project or user; plugin-distributable</td><td>Description every turn; body on demand</td><td>"How to write release notes." "How we draft outreach."</td></tr>
+</tbody>
+</table>
+<p>Rules of thumb:</p>
+<ul>
+  <li>About <em>you</em>, survives across projects? Memory.</li>
+  <li>About <em>this codebase</em>, stays with it? CLAUDE.md.</li>
+  <li>About <em>how to do a task</em>, with steps and judgment? Skill.</li>
+</ul>
+<p>When two are tempting, pick by what changes the answer. "Use Sonnet 4.5 for code review" is project-flavored if it depends on the codebase, personal if it's just your taste.</p>
+
+<h4>Do memories need specific formatting?</h4>
+<p>Light formatting; not a free-form brain dump.</p>
+<p>The frontmatter (<code>name</code>, <code>description</code>, <code>type</code>) is required. The body is prose. For <code>feedback</code> and <code>project</code> types, a strong pattern is:</p>
+<pre><code>[The rule or fact]
+
+**Why:** [the reason; often a past incident or strong preference]
+
+**How to apply:** [when this kicks in, how to behave when it does]</code></pre>
+<p>Including the <em>why</em> matters more than it sounds like. Stale memories are the worst kind; a memory you can re-evaluate ("does this reason still apply?") ages better than one you can only re-apply blindly. Future-Claude reading your memory file in three months will thank past-Claude for explaining the reason.</p>
+<p>For <code>user</code> and <code>reference</code> types, you can be terser. A user memory might just be a few sentences. A reference memory is often a single sentence pointing somewhere external.</p>
+
+<h4>Practical patterns</h4>
+<ul>
+  <li><strong>"Remember I'm a designer, not an engineer."</strong> A <code>user</code> memory. Affects how Claude pitches every explanation thereafter.</li>
+  <li><strong>"Stop adding emojis to my docs."</strong> A <code>feedback</code> memory with a reason. Holds across projects.</li>
+  <li><strong>"The watcher runs at 9am daily and writes to <code>proposed-updates.md</code>."</strong> A <code>project</code> memory. Lets future sessions pick up where this one left off.</li>
+  <li><strong>"Anthropic's release notes live at <code>docs.claude.com/en/release-notes/claude-code</code>."</strong> A <code>reference</code> memory. Saves the lookup.</li>
+</ul>
+
+<div class="callout confuse"><strong>Common confusions</strong>
+<ul>
+  <li><strong>"Memory is automatic, I don't have to do anything."</strong> Mostly true, but quality is much higher when you correct things proactively. If Claude saves something you'd rather it didn't, say so; if Claude misses something you wish it remembered, ask it to save it.</li>
+  <li><strong>"More memories = better."</strong> Not really. Quality and naming beat quantity. The index has to stay scannable.</li>
+  <li><strong>"Memory replaces <code>CLAUDE.md</code>."</strong> They cover different territory. Memory is about you and your patterns. <code>CLAUDE.md</code> is about the project. A team project still needs <code>CLAUDE.md</code> so teammates inherit the context; memory is yours alone.</li>
+  <li><strong>"Memory persists across products."</strong> Cowork's auto-memory is per-Cowork-account. It doesn't carry into Claude Code or claude.ai. If you want Claude Code to know something durable, put it in <code>~/.claude/CLAUDE.md</code> (user level).</li>
+</ul>
+</div>
+
+<h3>What carries across, what doesn't</h3>
+<ul>
+  <li><strong>Carries across:</strong> the engine (loop + model), MCP, the idea of skills and plugins, hooks (where supported).</li>
+  <li><strong>Cowork-only:</strong> artifacts, connectors-as-UI, scheduled tasks, workspace-folder concept, auto-memory (the cross-session brain), role-based onboarding.</li>
+  <li><strong>Claude Code-only:</strong> <code>CLAUDE.md</code> as a first-class file in the repo, the terminal surface, IDE integrations, repo-level git workflows.</li>
+</ul>
+
+<!-- PART 11 -->
+<h2 id="p11"><span class="part-num">Part 11</span>Cheat sheets and quick references</h2>
+
+<h3>Concept one-pagers</h3>
+<p><strong>CLAUDE.md.</strong> Project-specific system prompt. Loaded every turn. Use <code>@path</code> to import files. <code>CLAUDE.local.md</code> for machine-specific, gitignored stuff. Keep it lean.</p>
+<p><strong>Skill.</strong> Folder with <code>SKILL.md</code>. Description is the trigger. Body only loads when fired. Build company-specific, pull trusted for generic, fork when close-but-not-quite.</p>
+<p><strong>MCP.</strong> A process exposing tools to agents. Installs at user or project scope. All tool schemas load at session start, chatty MCPs are expensive. Treat installs like <code>curl | bash</code>.</p>
+<p><strong>Sub-agent.</strong> Isolated context window. Returns a single message to the parent. Keeps the main context clean. Not automatically faster, isolating, not accelerating.</p>
+<p><strong>Plugin.</strong> A bundle of any of the above. Installed from a marketplace. Anthropic official + many community ones.</p>
+<p><strong>Connector.</strong> Cowork's name for an MCP-backed integration to a specific service.</p>
+<p><strong>Mode.</strong> Permission posture. Default / Accept Edits / Plan (read-only) / Bypass / Auto (new, classifier-based).</p>
+<p><strong>Hook.</strong> Shell command fired at a lifecycle point. Deterministic behavior on top of the non-deterministic model.</p>
+<p><strong>Memory.</strong> Cowork's cross-session brain. <code>MEMORY.md</code> index loads every turn (cheap); individual type-tagged files (<code>user</code>, <code>feedback</code>, <code>project</code>, <code>reference</code>) load on demand. Remembers things about <em>you</em>, not the project.</p>
+
+<h3>Troubleshooting matrix</h3>
+<table>
+<thead><tr><th>Symptom</th><th>Likely cause</th><th>Fix</th></tr></thead>
+<tbody>
+<tr><td>Skill isn't firing</td><td>Description too vague or keyword mismatch</td><td>Rewrite description with explicit triggers</td></tr>
+<tr><td>Claude "forgets" earlier context</td><td>Context window full or compacted</td><td><code>/compact</code> less aggressively; split work</td></tr>
+<tr><td>Session feels slow / rambling</td><td>Context bloat</td><td><code>/clear</code>; review MCP schemas loaded</td></tr>
+<tr><td>MCP tool is "missing"</td><td>Not connected at this scope</td><td>Check <code>.mcp.json</code>, reconnect</td></tr>
+<tr><td>Plan mode "can't do anything"</td><td>It <em>is</em> running, it's read-only, not zero-tool</td><td>Switch to Default / Accept Edits to execute</td></tr>
+<tr><td>Hook isn't firing</td><td>Matcher pattern wrong</td><td>Log hook input; test matcher</td></tr>
+<tr><td>Token usage high at turn 1</td><td>Chatty MCP schemas loaded at session start</td><td>Disconnect unused MCPs; try Tool Search</td></tr>
+<tr><td>Auto-format not running</td><td>Wrong hook event or matcher</td><td>Use <code>PostToolUse</code> with <code>Write|Edit</code> matcher</td></tr>
+<tr><td>Sub-agent returned the wrong thing</td><td>Its prompt too narrow; parent prompt unclear</td><td>Give the sub-agent its own clearer brief</td></tr>
+</tbody>
+</table>
+
+<h3>Glossary</h3>
+<table>
+<tbody>
+<tr><td><strong>Agent</strong></td><td>LLM in a loop with tools. Also: the Task tool, a named sub-agent, etc. (four meanings)</td></tr>
+<tr><td><strong>Artifact</strong></td><td>Cowork live HTML view. Persists, can re-fetch</td></tr>
+<tr><td><strong>CLAUDE.md</strong></td><td>System-prompt-append for a project</td></tr>
+<tr><td><strong>Compact</strong></td><td>Summarize old context into a brief, discarding detail</td></tr>
+<tr><td><strong>Connector</strong></td><td>Cowork UI term for an MCP-backed integration</td></tr>
+<tr><td><strong>Context window</strong></td><td>Everything the model can see at once</td></tr>
+<tr><td><strong>Hook</strong></td><td>Shell command on a lifecycle event</td></tr>
+<tr><td><strong>LLM</strong></td><td>Large Language Model. Pattern-matcher on text</td></tr>
+<tr><td><strong>MCP</strong></td><td>Model Context Protocol. Standard for exposing tools</td></tr>
+<tr><td><strong>Memory</strong></td><td>Cowork's cross-session, file-based brain. Index loaded every turn; bodies on demand</td></tr>
+<tr><td><strong>MEMORY.md</strong></td><td>Index file inside the memory directory. One-line pointer per memory file</td></tr>
+<tr><td><strong>Mode</strong></td><td>Claude Code permission posture</td></tr>
+<tr><td><strong>Plugin</strong></td><td>Bundle of skills / MCPs / agents / hooks / commands</td></tr>
+<tr><td><strong>Skill</strong></td><td>Folder with instructions and optional scripts. Description is the trigger</td></tr>
+<tr><td><strong>Sub-agent</strong></td><td>Agent invocation with its own isolated context window</td></tr>
+<tr><td><strong>Token</strong></td><td>Unit of text the model reads/writes. Billed per input and output</td></tr>
+<tr><td><strong>Tool</strong></td><td>A function the agent can call (Read, Write, Edit, Bash, anything an MCP exposes)</td></tr>
+</tbody>
+</table>
+
+<h3>Common confusions roll-up</h3>
+<ol>
+  <li><strong><code>CLAUDE.md</code> is a README.</strong> No, it's a system-prompt append. Different audience, different content.</li>
+  <li><strong>Plan mode means "no tools."</strong> No, read-only. It can still explore.</li>
+  <li><strong>MCPs are free until you use them.</strong> No, their schemas cost tokens at every session start.</li>
+  <li><strong>A skill is just a prompt template.</strong> No, it can include scripts and reference files, and its selection is automatic based on description matching.</li>
+  <li><strong>Sub-agents are faster than doing it yourself.</strong> Not inherently, they isolate context. Parallel Task calls <em>are</em> faster.</li>
+  <li><strong>"Agent" has one meaning.</strong> No, at least four (Task tool, named sub-agent, parallel Tasks, separate sessions).</li>
+  <li><strong>The Agent SDK is a separate product from Claude Code.</strong> They share the underlying loop; the SDK was extracted from Claude Code.</li>
+  <li><strong>60% / 80% context thresholds are official.</strong> They're heuristics. Anthropic doesn't publish these.</li>
+  <li><strong>The terminal is the only Claude Code.</strong> No, but it's historically the most feature-complete surface. Verify for your version.</li>
+  <li><strong>Antigravity is Google's.</strong> Yes, the product name is Antigravity.</li>
+</ol>
+
+<footer class="doc-foot">
+  <p>This guide is a snapshot. Anthropic ships multiple meaningful changes a month. The concepts here, context windows, agents, MCP, skills-vs-capabilities, the scope cake, are stable mental models; the specifics (exact mode names, exact hook events, which IDE leads on what) will drift.</p>
+  <p>If something is wrong, or something's missing you wish someone had told you earlier, say so. I'd rather have the correction than the credit.</p>
+  <p>- An unofficial field guide, written by a practitioner, not Anthropic.</p>
+  <p style="margin-top:10px;"><strong>By Michael Nissan.</strong> Built from three months of daily use; revised whenever I learn I was wrong about something.</p>
+</footer>
+
+</main>
+</div>
+
+<script>
+(function() {
+  // Scrollspy TOC
+  var links = Array.prototype.slice.call(document.querySelectorAll('nav.toc a'));
+  var targets = links.map(function(a) {
+    var id = a.getAttribute('href').slice(1);
+    return document.getElementById(id);
+  }).filter(Boolean);
+
+  function onScroll() {
+    var y = window.scrollY + 120;
+    var active = null;
+    for (var i = 0; i < targets.length; i++) {
+      if (targets[i].offsetTop <= y) active = targets[i].id;
+    }
+    links.forEach(function(a) {
+      if (a.getAttribute('href') === '#' + active) a.classList.add('active');
+      else a.classList.remove('active');
+    });
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+})();
+</script>
+
+</body>
+</html>
